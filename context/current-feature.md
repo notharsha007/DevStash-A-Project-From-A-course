@@ -8,15 +8,9 @@ Idle
 
 ## Goals
 
-<!-- Add goals for the next feature here -->
-
 ## Notes
 
-<!-- Add notes here -->
-
 ## History
-
-<!-- Keep this updated, Earliest to Latest -->
 
 - **2026-03-29** — Initial Next.js project setup (Create Next App)
 - **2026-03-29** — Completed Dashboard UI Phase 1
@@ -25,3 +19,4 @@ Idle
 - **2026-03-29** — Completed Prisma 7 + Neon PostgreSQL setup — schema, migrations, seed, client singleton
 - **2026-03-29** — Completed Seed Data — demo user, 7 system item types, 5 collections with 18 items
 - **2026-03-29** — Completed Dashboard Collections — real DB data for collection cards, stats, dominant type colors
+- **2026-03-29** — Completed Dashboard Items — real DB data for pinned/recent items, item stats, redesigned item cards, relative dates

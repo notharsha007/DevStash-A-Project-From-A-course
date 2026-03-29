@@ -1,22 +1,11 @@
 import Link from "next/link";
-import { Pin } from "lucide-react";
-import { mockItems, mockItemTypes } from "@/lib/mock-data";
+import { Clock, Pin } from "lucide-react";
 import { getRecentCollections, getCollectionStats } from "@/lib/db/collections";
+import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items";
 import { prisma } from "@/lib/prisma";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { ItemRow } from "@/components/dashboard/ItemRow";
-
-const typeMap = Object.fromEntries(mockItemTypes.map((t) => [t.id, t]));
-
-const pinnedItems = mockItems.filter((item) => item.isPinned);
-
-const recentItems = [...mockItems]
-  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-  .slice(0, 10);
-
-const totalItems = mockItems.length;
-const favoriteItems = mockItems.filter((i) => i.isFavorite).length;
 
 export default async function DashboardPage() {
   // TODO: replace with authenticated user once auth is set up
@@ -26,10 +15,14 @@ export default async function DashboardPage() {
 
   const userId = user?.id ?? "";
 
-  const [recentCollections, collectionStats] = await Promise.all([
-    getRecentCollections(userId),
-    getCollectionStats(userId),
-  ]);
+  const [recentCollections, collectionStats, pinnedItems, recentItems, itemStats] =
+    await Promise.all([
+      getRecentCollections(userId),
+      getCollectionStats(userId),
+      getPinnedItems(userId),
+      getRecentItems(userId),
+      getItemStats(userId),
+    ]);
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
@@ -41,9 +34,9 @@ export default async function DashboardPage() {
       {/* Stats */}
       <div className="mt-6">
         <StatsCards
-          totalItems={totalItems}
+          totalItems={itemStats.totalItems}
           totalCollections={collectionStats.totalCollections}
-          favoriteItems={favoriteItems}
+          favoriteItems={itemStats.favoriteItems}
           favoriteCollections={collectionStats.favoriteCollections}
         />
       </div>
@@ -83,33 +76,7 @@ export default async function DashboardPage() {
             <h2 className="text-lg font-semibold">Pinned</h2>
           </div>
           <div className="mt-4 space-y-2">
-            {pinnedItems.map((item) => {
-              const type = typeMap[item.itemTypeId];
-              return (
-                <ItemRow
-                  key={item.id}
-                  title={item.title}
-                  description={item.description}
-                  tags={item.tags}
-                  isPinned={item.isPinned}
-                  isFavorite={item.isFavorite}
-                  typeIcon={type?.icon ?? "Code"}
-                  typeColor={type?.color ?? "#3b82f6"}
-                  updatedAt={item.updatedAt}
-                />
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Recent Items */}
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">Recent</h2>
-        <div className="mt-4 space-y-2">
-          {recentItems.map((item) => {
-            const type = typeMap[item.itemTypeId];
-            return (
+            {pinnedItems.map((item) => (
               <ItemRow
                 key={item.id}
                 title={item.title}
@@ -117,12 +84,35 @@ export default async function DashboardPage() {
                 tags={item.tags}
                 isPinned={item.isPinned}
                 isFavorite={item.isFavorite}
-                typeIcon={type?.icon ?? "Code"}
-                typeColor={type?.color ?? "#3b82f6"}
+                typeIcon={item.typeIcon}
+                typeColor={item.typeColor}
                 updatedAt={item.updatedAt}
               />
-            );
-          })}
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent Items */}
+      <section className="mt-8">
+        <div className="flex items-center gap-2">
+          <Clock className="size-4 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">Recent Items</h2>
+        </div>
+        <div className="mt-4 space-y-2">
+          {recentItems.map((item) => (
+            <ItemRow
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              tags={item.tags}
+              isPinned={item.isPinned}
+              isFavorite={item.isFavorite}
+              typeIcon={item.typeIcon}
+              typeColor={item.typeColor}
+              updatedAt={item.updatedAt}
+            />
+          ))}
         </div>
       </section>
     </main>
