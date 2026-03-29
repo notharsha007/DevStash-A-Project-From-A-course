@@ -383,6 +383,12 @@ Payments handled via **Stripe** (Checkout + Customer Portal). Store `stripeCusto
 - [Linear](https://linear.app) — speed and keyboard-first UX
 - [Raycast](https://raycast.com) — quick-access drawer pattern
 
+### Screenshots
+
+Refer to the screenshots below as a base for the backend ui. It does not have to be exact. Use it as a reference :
+
+- @context/screenshots/dashboard-ui-main.png
+- @context/screenshots/dashboard-ui-drawer.png
 ### Layout
 
 ```
