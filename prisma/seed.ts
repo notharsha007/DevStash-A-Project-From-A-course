@@ -20,7 +20,23 @@ const systemItemTypes = [
 
 // ─── Seed Items by Collection ────────────────────────
 
-const collections = [
+interface SeedItem {
+  title: string;
+  type: string;
+  language?: string;
+  content?: string;
+  url?: string;
+  isPinned?: boolean;
+  isFavorite?: boolean;
+}
+
+interface SeedCollection {
+  name: string;
+  description: string;
+  items: SeedItem[];
+}
+
+const collections: SeedCollection[] = [
   {
     name: "React Patterns",
     description: "Reusable React patterns and hooks",
@@ -29,6 +45,8 @@ const collections = [
         title: "useDebounce Hook",
         type: "snippet",
         language: "typescript",
+        isPinned: true,
+        isFavorite: true,
         content: `import { useEffect, useState } from "react";
 
 export function useDebounce<T>(value: T, delay: number): T {
@@ -46,6 +64,7 @@ export function useDebounce<T>(value: T, delay: number): T {
         title: "Compound Component Pattern",
         type: "snippet",
         language: "typescript",
+        isFavorite: true,
         content: `import { createContext, useContext, useState, ReactNode } from "react";
 
 interface AccordionContext {
@@ -113,6 +132,8 @@ export function cn(...inputs: ClassValue[]): string {
       {
         title: "Code Review Prompt",
         type: "prompt",
+        isPinned: true,
+        isFavorite: true,
         content: `Review the following code for:
 1. Correctness — are there bugs, edge cases, or logic errors?
 2. Performance — any unnecessary re-renders, O(n²) loops, or memory leaks?
@@ -154,6 +175,7 @@ For each suggestion, explain the benefit and show the refactored code.`,
         title: "Multi-stage Dockerfile",
         type: "snippet",
         language: "dockerfile",
+        isPinned: true,
         content: `# Build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -207,6 +229,7 @@ CMD ["npm", "start"]`,
       {
         title: "Kill Process on Port",
         type: "command",
+        isPinned: true,
         content: `lsof -ti :3000 | xargs kill -9`,
       },
       {
@@ -326,8 +349,10 @@ async function main() {
           title: item.title,
           content: isLink ? null : item.content ?? null,
           contentType: isLink ? "URL" : "TEXT",
-          url: isLink ? (item as { url: string }).url : null,
-          language: "language" in item ? (item.language as string) : null,
+          url: isLink ? item.url ?? null : null,
+          language: item.language ?? null,
+          isPinned: item.isPinned ?? false,
+          isFavorite: item.isFavorite ?? false,
           userId: user.id,
           itemTypeId: typeId,
           collections: {
