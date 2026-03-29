@@ -1,18 +1,18 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+None — ready for next feature.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Idle
 
 ## Goals
 
-<!-- Goals and requirements -->
+<!-- Add goals for the next feature here -->
 
 ## Notes
 
-<!-- Any extra notes -->
+<!-- Add notes here -->
 
 ## History
 
@@ -20,3 +20,4 @@
 
 - **2026-03-29** — Initial Next.js project setup (Create Next App)
 - **2026-03-29** — Completed Dashboard UI Phase 1
+- **2026-03-29** — Completed Dashboard UI Phase 2 — Collapsible sidebar with types nav, favorite/recent collections, user avatar, mobile drawer
