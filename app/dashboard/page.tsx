@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { Pin } from "lucide-react";
-import { mockItems, mockCollections, mockItemTypes } from "@/lib/mock-data";
+import { mockItems, mockItemTypes } from "@/lib/mock-data";
+import { getRecentCollections, getCollectionStats } from "@/lib/db/collections";
+import { prisma } from "@/lib/prisma";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { ItemRow } from "@/components/dashboard/ItemRow";
 
 const typeMap = Object.fromEntries(mockItemTypes.map((t) => [t.id, t]));
-
-const recentCollections = [...mockCollections]
-  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-  .slice(0, 6);
 
 const pinnedItems = mockItems.filter((item) => item.isPinned);
 
@@ -18,11 +16,21 @@ const recentItems = [...mockItems]
   .slice(0, 10);
 
 const totalItems = mockItems.length;
-const totalCollections = mockCollections.length;
 const favoriteItems = mockItems.filter((i) => i.isFavorite).length;
-const favoriteCollections = mockCollections.filter((c) => c.isFavorite).length;
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  // TODO: replace with authenticated user once auth is set up
+  const user = await prisma.user.findUnique({
+    where: { email: "demo@devstash.io" },
+  });
+
+  const userId = user?.id ?? "";
+
+  const [recentCollections, collectionStats] = await Promise.all([
+    getRecentCollections(userId),
+    getCollectionStats(userId),
+  ]);
+
   return (
     <main className="flex-1 overflow-y-auto p-6">
       <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -34,9 +42,9 @@ export default function DashboardPage() {
       <div className="mt-6">
         <StatsCards
           totalItems={totalItems}
-          totalCollections={totalCollections}
+          totalCollections={collectionStats.totalCollections}
           favoriteItems={favoriteItems}
-          favoriteCollections={favoriteCollections}
+          favoriteCollections={collectionStats.favoriteCollections}
         />
       </div>
 
