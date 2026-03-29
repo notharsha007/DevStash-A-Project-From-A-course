@@ -20,3 +20,4 @@ Idle
 - **2026-03-29** — Completed Seed Data — demo user, 7 system item types, 5 collections with 18 items
 - **2026-03-29** — Completed Dashboard Collections — real DB data for collection cards, stats, dominant type colors
 - **2026-03-29** — Completed Dashboard Items — real DB data for pinned/recent items, item stats, redesigned item cards, relative dates
+- **2026-03-29** — Completed Stats & Sidebar — real DB data for sidebar item types, counts, collections with favorites and colored circles
