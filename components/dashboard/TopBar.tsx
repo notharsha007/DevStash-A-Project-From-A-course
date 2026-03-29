@@ -1,10 +1,24 @@
-import { Search, Plus, FolderPlus } from "lucide-react";
+"use client";
+
+import { Search, Plus, FolderPlus, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSidebar } from "@/components/dashboard/SidebarContext";
 
 export function TopBar() {
+  const { toggleMobile } = useSidebar();
+
   return (
     <header className="flex h-14 items-center gap-4 border-b border-border px-4">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleMobile}
+        className="lg:hidden"
+      >
+        <PanelLeft className="size-5" />
+      </Button>
+
       <div className="flex items-center gap-2">
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
           <span className="text-sm font-bold text-primary-foreground">D</span>
