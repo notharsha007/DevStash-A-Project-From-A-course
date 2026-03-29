@@ -389,6 +389,7 @@ Refer to the screenshots below as a base for the backend ui. It does not have to
 
 - @context/screenshots/dashboard-ui-main.png
 - @context/screenshots/dashboard-ui-drawer.png
+
 ### Layout
 
 ```
