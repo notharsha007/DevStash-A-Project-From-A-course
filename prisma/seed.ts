@@ -33,6 +33,7 @@ interface SeedItem {
 interface SeedCollection {
   name: string;
   description: string;
+  isFavorite?: boolean;
   items: SeedItem[];
 }
 
@@ -40,6 +41,7 @@ const collections: SeedCollection[] = [
   {
     name: "React Patterns",
     description: "Reusable React patterns and hooks",
+    isFavorite: true,
     items: [
       {
         title: "useDebounce Hook",
@@ -128,6 +130,7 @@ export function cn(...inputs: ClassValue[]): string {
   {
     name: "AI Workflows",
     description: "AI prompts and workflow automations",
+    isFavorite: true,
     items: [
       {
         title: "Code Review Prompt",
@@ -333,6 +336,7 @@ async function main() {
       data: {
         name: col.name,
         description: col.description,
+        isFavorite: col.isFavorite ?? false,
         userId: user.id,
       },
     });

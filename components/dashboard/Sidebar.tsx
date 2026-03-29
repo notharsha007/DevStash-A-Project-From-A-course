@@ -11,7 +11,6 @@ import {
   Image,
   LinkIcon,
   Star,
-  FolderOpen,
   PanelLeft,
   Settings,
   Plus,
@@ -22,12 +21,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
-import {
-  mockUser,
-  mockItemTypes,
-  mockCollections,
-  mockTypeCounts,
-} from "@/lib/mock-data";
+import type { SidebarItemType } from "@/lib/db/items";
+import type { SidebarCollection } from "@/lib/db/collections";
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -39,18 +34,22 @@ const iconMap: Record<string, React.ElementType> = {
   Link: LinkIcon,
 };
 
-const favoriteCollections = mockCollections.filter((c) => c.isFavorite);
-const recentCollections = [...mockCollections]
-  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-  .slice(0, 5);
-
 function typeToSlug(name: string) {
   return name.toLowerCase() + "s";
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  itemTypes: SidebarItemType[];
+  collections: SidebarCollection[];
+  user: { name: string; email: string };
+}
+
+export function Sidebar({ itemTypes, collections, user }: SidebarProps) {
   const { isCollapsed, isMobileOpen, toggle, closeMobile } = useSidebar();
   const [collectionsOpen, setCollectionsOpen] = useState(true);
+
+  const favoriteCollections = collections.filter((c) => c.isFavorite);
+  const recentCollections = collections.filter((c) => !c.isFavorite);
 
   const sidebarContent = (
     <div className="flex h-full flex-col">
@@ -90,9 +89,8 @@ export function Sidebar() {
       {/* Types nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-2">
         <ul className="space-y-0.5">
-          {mockItemTypes.map((type) => {
+          {itemTypes.map((type) => {
             const Icon = iconMap[type.icon] ?? Code;
-            const count = mockTypeCounts[type.id] ?? 0;
             const link = (
               <Link
                 href={`/items/${typeToSlug(type.name)}`}
@@ -103,7 +101,7 @@ export function Sidebar() {
                 {!isCollapsed && (
                   <>
                     <span className="flex-1">{type.name + "s"}</span>
-                    <span className="text-xs text-muted-foreground">{count}</span>
+                    <span className="text-xs text-muted-foreground">{type.count}</span>
                   </>
                 )}
               </Link>
@@ -181,7 +179,10 @@ export function Sidebar() {
                             onClick={closeMobile}
                             className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
                           >
-                            <FolderOpen className="size-3.5 shrink-0 text-muted-foreground" />
+                            <span
+                              className="size-2.5 shrink-0 rounded-full"
+                              style={{ backgroundColor: col.dominantTypeColor }}
+                            />
                             <span className="flex-1 truncate">{col.name}</span>
                             <span className="text-xs text-muted-foreground">
                               {col.itemCount}
@@ -192,6 +193,15 @@ export function Sidebar() {
                     </ul>
                   </div>
                 )}
+
+                {/* View all collections link */}
+                <Link
+                  href="/collections"
+                  onClick={closeMobile}
+                  className="mt-2 block px-2.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  View all collections
+                </Link>
               </>
             )}
           </div>
@@ -209,21 +219,21 @@ export function Sidebar() {
                   <Avatar className="cursor-pointer" />
                 }
               >
-                <AvatarFallback>{mockUser.name?.charAt(0) ?? "?"}</AvatarFallback>
+                <AvatarFallback>{user.name?.charAt(0) ?? "?"}</AvatarFallback>
               </TooltipTrigger>
-              <TooltipContent side="right">{mockUser.name}</TooltipContent>
+              <TooltipContent side="right">{user.name}</TooltipContent>
             </Tooltip>
           ) : (
             <Avatar>
-              <AvatarFallback>{mockUser.name?.charAt(0) ?? "?"}</AvatarFallback>
+              <AvatarFallback>{user.name?.charAt(0) ?? "?"}</AvatarFallback>
             </Avatar>
           )}
           {!isCollapsed && (
             <>
               <div className="flex-1 overflow-hidden">
-                <p className="truncate text-sm font-medium">{mockUser.name}</p>
+                <p className="truncate text-sm font-medium">{user.name}</p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {mockUser.email}
+                  {user.email}
                 </p>
               </div>
               <Tooltip>
