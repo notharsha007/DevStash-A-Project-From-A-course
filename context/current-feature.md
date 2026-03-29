@@ -24,3 +24,4 @@ Idle
 - **2026-03-29** — Completed Dashboard UI Phase 3 — Stats cards, collections grid, pinned items, recent items
 - **2026-03-29** — Completed Prisma 7 + Neon PostgreSQL setup — schema, migrations, seed, client singleton
 - **2026-03-29** — Completed Seed Data — demo user, 7 system item types, 5 collections with 18 items
+- **2026-03-29** — Completed Dashboard Collections — real DB data for collection cards, stats, dominant type colors
