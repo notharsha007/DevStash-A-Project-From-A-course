@@ -1,6 +1,7 @@
 import { TopBar } from "@/components/dashboard/TopBar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function DashboardLayout({
   children,
@@ -9,13 +10,15 @@ export default function DashboardLayout({
 }>) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen flex-col">
-        <TopBar />
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
-          {children}
+      <TooltipProvider>
+        <div className="flex h-screen flex-col">
+          <TopBar />
+          <div className="flex flex-1 overflow-hidden">
+            <Sidebar />
+            {children}
+          </div>
         </div>
-      </div>
+      </TooltipProvider>
     </SidebarProvider>
   );
 }

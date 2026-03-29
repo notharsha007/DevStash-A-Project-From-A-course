@@ -12,6 +12,9 @@ import {
   Star,
   MoreHorizontal,
 } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -43,43 +46,54 @@ export function CollectionCard({
   itemTypeIcons,
 }: CollectionCardProps) {
   return (
-    <Link
-      href={`/collections/${id}`}
-      className="group relative flex flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/20"
-      style={{
-        borderLeftWidth: "3px",
-        borderLeftColor: dominantTypeColor,
-      }}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold">{name}</h3>
-          {isFavorite && (
-            <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
+    <Link href={`/collections/${id}`} className="block">
+      <Card
+        className="transition-colors hover:ring-foreground/20"
+        style={{
+          borderLeftWidth: "3px",
+          borderLeftColor: dominantTypeColor,
+        }}
+      >
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            {name}
+            {isFavorite && (
+              <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
+            )}
+          </CardTitle>
+          <CardAction>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => e.preventDefault()}
+                  />
+                }
+              >
+                <MoreHorizontal className="size-4" />
+              </TooltipTrigger>
+              <TooltipContent>More options</TooltipContent>
+            </Tooltip>
+          </CardAction>
+          <CardDescription>{itemCount} items</CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          {description && (
+            <p className="line-clamp-1 text-sm text-muted-foreground/80">
+              {description}
+            </p>
           )}
-        </div>
-        <button
-          className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
-          onClick={(e) => e.preventDefault()}
-        >
-          <MoreHorizontal className="size-4" />
-        </button>
-      </div>
-
-      <p className="text-sm text-muted-foreground">{itemCount} items</p>
-
-      {description && (
-        <p className="mt-2 line-clamp-1 text-sm text-muted-foreground/80">
-          {description}
-        </p>
-      )}
-
-      <div className="mt-3 flex items-center gap-1.5">
-        {itemTypeIcons.map((iconName, i) => {
-          const Icon = iconMap[iconName] ?? Code;
-          return <Icon key={i} className="size-3.5 text-muted-foreground" />;
-        })}
-      </div>
+          <div className="mt-2 flex items-center gap-1.5">
+            {itemTypeIcons.map((iconName, i) => {
+              const Icon = iconMap[iconName] ?? Code;
+              return <Icon key={i} className="size-3.5 text-muted-foreground" />;
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 }

@@ -4,6 +4,7 @@ import {
   Star,
   FolderHeart,
 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface StatsCardsProps {
   totalItems: number;
@@ -33,16 +34,15 @@ export function StatsCards(props: StatsCardsProps) {
         const Icon = stat.icon;
         const value = props[valueMap[stat.key]];
         return (
-          <div
-            key={stat.key}
-            className="rounded-xl border border-border bg-card p-4"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{stat.label}</span>
-              <Icon className="size-4 text-muted-foreground" />
-            </div>
-            <p className="mt-2 text-2xl font-bold">{value}</p>
-          </div>
+          <Card key={stat.key} size="sm">
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">{stat.label}</span>
+                <Icon className="size-4 text-muted-foreground" />
+              </div>
+              <p className="mt-2 text-2xl font-bold">{value}</p>
+            </CardContent>
+          </Card>
         );
       })}
     </div>

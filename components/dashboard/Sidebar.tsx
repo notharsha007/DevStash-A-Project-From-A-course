@@ -18,6 +18,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 import {
   mockUser,
@@ -52,20 +55,27 @@ export function Sidebar() {
   const sidebarContent = (
     <div className="flex h-full flex-col">
       {/* Header with collapse toggle */}
-      <div className={`flex h-14 items-center border-b border-border px-3 ${isCollapsed ? "justify-center" : "justify-between"}`}>
+      <div className={`flex h-14 items-center px-3 ${isCollapsed ? "justify-center" : "justify-between"}`}>
         {!isCollapsed && (
           <span className="text-xs font-semibold  tracking-wider text-muted-foreground">
             Navigation
           </span>
         )}
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={toggle}
-          className="hidden lg:flex"
-        >
-          <PanelLeft className={`size-4 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={toggle}
+                className="hidden lg:flex"
+              />
+            }
+          >
+            <PanelLeft className={`size-4 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
+          </TooltipTrigger>
+          <TooltipContent side="right">{isCollapsed ? "Expand" : "Collapse"}</TooltipContent>
+        </Tooltip>
         <Button
           variant="ghost"
           size="icon-sm"
@@ -75,6 +85,7 @@ export function Sidebar() {
           <PanelLeft className="size-4" />
         </Button>
       </div>
+      <Separator />
 
       {/* Types nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-2">
@@ -82,22 +93,31 @@ export function Sidebar() {
           {mockItemTypes.map((type) => {
             const Icon = iconMap[type.icon] ?? Code;
             const count = mockTypeCounts[type.id] ?? 0;
+            const link = (
+              <Link
+                href={`/items/${typeToSlug(type.name)}`}
+                onClick={closeMobile}
+                className="flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <Icon className="size-4 shrink-0" style={{ color: type.color }} />
+                {!isCollapsed && (
+                  <>
+                    <span className="flex-1">{type.name + "s"}</span>
+                    <span className="text-xs text-muted-foreground">{count}</span>
+                  </>
+                )}
+              </Link>
+            );
             return (
               <li key={type.id}>
-                <Link
-                  href={`/items/${typeToSlug(type.name)}`}
-                  onClick={closeMobile}
-                  className="flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
-                  title={isCollapsed ? type.name : undefined}
-                >
-                  <Icon className="size-4 shrink-0" style={{ color: type.color }} />
-                  {!isCollapsed && (
-                    <>
-                      <span className="flex-1">{type.name + "s"}</span>
-                      <span className="text-xs text-muted-foreground">{count}</span>
-                    </>
-                  )}
-                </Link>
+                {isCollapsed ? (
+                  <Tooltip>
+                    <TooltipTrigger render={link} />
+                    <TooltipContent side="right">{type.name + "s"}</TooltipContent>
+                  </Tooltip>
+                ) : (
+                  link
+                )}
               </li>
             );
           })}
@@ -179,13 +199,25 @@ export function Sidebar() {
       </nav>
 
       {/* User area */}
-      <div className="border-t border-border p-3">
+      <Separator />
+      <div className="p-3">
         <div className="flex items-center gap-3">
-          <div
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium"
-          >
-            {mockUser.name?.charAt(0) ?? "?"}
-          </div>
+          {isCollapsed ? (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Avatar className="cursor-pointer" />
+                }
+              >
+                <AvatarFallback>{mockUser.name?.charAt(0) ?? "?"}</AvatarFallback>
+              </TooltipTrigger>
+              <TooltipContent side="right">{mockUser.name}</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Avatar>
+              <AvatarFallback>{mockUser.name?.charAt(0) ?? "?"}</AvatarFallback>
+            </Avatar>
+          )}
           {!isCollapsed && (
             <>
               <div className="flex-1 overflow-hidden">
@@ -194,9 +226,16 @@ export function Sidebar() {
                   {mockUser.email}
                 </p>
               </div>
-              <Button variant="ghost" size="icon-xs">
-                <Settings className="size-4" />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button variant="ghost" size="icon-xs" />
+                  }
+                >
+                  <Settings className="size-4" />
+                </TooltipTrigger>
+                <TooltipContent>Settings</TooltipContent>
+              </Tooltip>
             </>
           )}
         </div>

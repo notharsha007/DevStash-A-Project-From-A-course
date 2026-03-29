@@ -3,6 +3,7 @@
 import { Search, Plus, FolderPlus, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 
 export function TopBar() {
@@ -37,14 +38,28 @@ export function TopBar() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm">
-          <FolderPlus className="size-4" />
-          <span className="hidden sm:inline">New Collection</span>
-        </Button>
-        <Button size="sm">
-          <Plus className="size-4" />
-          <span className="hidden sm:inline">New Item</span>
-        </Button>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button variant="outline" size="sm" />
+            }
+          >
+            <FolderPlus className="size-4" />
+            <span className="hidden sm:inline">New Collection</span>
+          </TooltipTrigger>
+          <TooltipContent className="sm:hidden">New Collection</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button size="sm" />
+            }
+          >
+            <Plus className="size-4" />
+            <span className="hidden sm:inline">New Item</span>
+          </TooltipTrigger>
+          <TooltipContent className="sm:hidden">New Item</TooltipContent>
+        </Tooltip>
       </div>
     </header>
   );
