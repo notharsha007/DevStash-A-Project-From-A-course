@@ -54,7 +54,7 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/sign-in?registered=true");
+    router.push(`/check-email?email=${encodeURIComponent(email)}`);
   }
 
   return (

@@ -27,8 +27,8 @@ function SignInForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get("registered") === "true") {
-      toast.success("Account created! You can now sign in.", { id: "registered" });
+    if (searchParams.get("verified") === "true") {
+      toast.success("Email verified! You can now sign in.", { id: "verified" });
     }
   }, [searchParams]);
 
@@ -46,6 +46,10 @@ function SignInForm() {
     setLoading(false);
 
     if (result?.error) {
+      if (result.code === "EMAIL_NOT_VERIFIED") {
+        router.push(`/check-email?email=${encodeURIComponent(email)}`);
+        return;
+      }
       setError("Invalid email or password");
       return;
     }
