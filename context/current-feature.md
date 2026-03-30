@@ -1,22 +1,14 @@
 # Current Feature
 
-Add Pro Badge to Sidebar
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Add a PRO badge to the Files and Images item types in the sidebar
-- Use the ShadCN UI Badge component
-- Badge should be clean and subtle
-- PRO text must be all uppercase
-
 ## Notes
-
-- Only Files and Images types get the badge (both are Pro-tier features)
-- Keep the badge visually minimal so it doesn't clutter the sidebar nav
 
 ## History
 
@@ -29,3 +21,4 @@ In Progress
 - **2026-03-29** — Completed Dashboard Collections — real DB data for collection cards, stats, dominant type colors
 - **2026-03-29** — Completed Dashboard Items — real DB data for pinned/recent items, item stats, redesigned item cards, relative dates
 - **2026-03-29** — Completed Stats & Sidebar — real DB data for sidebar item types, counts, collections with favorites and colored circles
+- **2026-03-30** — Completed Add Pro Badge to Sidebar — PRO badge on File and Image types using ShadCN Badge component
