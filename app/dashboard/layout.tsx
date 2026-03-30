@@ -1,8 +1,9 @@
+import { redirect } from "next/navigation";
 import { TopBar } from "@/components/dashboard/TopBar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 import { getItemTypesWithCounts } from "@/lib/db/items";
 import { getSidebarCollections } from "@/lib/db/collections";
 
@@ -11,12 +12,13 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // TODO: replace with authenticated user once auth is set up
-  const user = await prisma.user.findUnique({
-    where: { email: "demo@devstash.io" },
-  });
+  const session = await auth();
 
-  const userId = user?.id ?? "";
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
+
+  const userId = session.user.id!;
 
   const [itemTypes, sidebarCollections] = await Promise.all([
     getItemTypesWithCounts(userId),
@@ -24,8 +26,9 @@ export default async function DashboardLayout({
   ]);
 
   const userData = {
-    name: user?.name ?? "User",
-    email: user?.email ?? "",
+    name: session.user.name ?? "User",
+    email: session.user.email ?? "",
+    image: session.user.image,
   };
 
   return (

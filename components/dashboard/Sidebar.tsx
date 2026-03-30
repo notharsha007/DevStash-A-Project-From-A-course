@@ -2,18 +2,29 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 import {
   Star,
   PanelLeft,
-  Settings,
   Plus,
   ChevronDown,
+  LogOut,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+import { UserAvatar } from "@/components/UserAvatar";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 import { iconMap } from "@/lib/icon-map";
 import type { SidebarItemType } from "@/lib/db/items";
@@ -26,7 +37,7 @@ function typeToSlug(name: string) {
 interface SidebarProps {
   itemTypes: SidebarItemType[];
   collections: SidebarCollection[];
-  user: { name: string; email: string };
+  user: { name: string; email: string; image?: string | null };
 }
 
 export function Sidebar({ itemTypes, collections, user }: SidebarProps) {
@@ -201,44 +212,42 @@ export function Sidebar({ itemTypes, collections, user }: SidebarProps) {
       {/* User area */}
       <Separator />
       <div className="p-3">
-        <div className="flex items-center gap-3">
-          {isCollapsed ? (
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Avatar className="cursor-pointer" />
-                }
-              >
-                <AvatarFallback>{user.name?.charAt(0) ?? "?"}</AvatarFallback>
-              </TooltipTrigger>
-              <TooltipContent side="right">{user.name}</TooltipContent>
-            </Tooltip>
-          ) : (
-            <Avatar>
-              <AvatarFallback>{user.name?.charAt(0) ?? "?"}</AvatarFallback>
-            </Avatar>
-          )}
-          {!isCollapsed && (
-            <>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <button className={`flex cursor-pointer items-center outline-none transition-colors hover:opacity-80 ${isCollapsed ? "justify-center" : "w-full gap-3 rounded-lg text-left"}`} />
+            }
+          >
+            <UserAvatar name={user.name} image={user.image} />
+            {!isCollapsed && (
               <div className="flex-1 overflow-hidden">
                 <p className="truncate text-sm font-medium">{user.name}</p>
                 <p className="truncate text-xs text-muted-foreground">
                   {user.email}
                 </p>
               </div>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <Button variant="ghost" size="icon-xs" />
-                  }
-                >
-                  <Settings className="size-4" />
-                </TooltipTrigger>
-                <TooltipContent>Settings</TooltipContent>
-              </Tooltip>
-            </>
-          )}
-        </div>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="start" sideOffset={8}>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => window.location.href = "/profile"}
+              >
+                <User className="size-4" />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => signOut({ callbackUrl: "/sign-in" })}
+              >
+                <LogOut className="size-4" />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
