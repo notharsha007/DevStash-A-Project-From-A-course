@@ -2,29 +2,13 @@
 
 import Link from "next/link";
 import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  LinkIcon,
   Star,
   MoreHorizontal,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-
-const iconMap: Record<string, React.ElementType> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: LinkIcon,
-};
+import { iconMap } from "@/lib/icon-map";
 
 interface CollectionCardProps {
   id: string;
@@ -88,7 +72,7 @@ export function CollectionCard({
           )}
           <div className="mt-2 flex items-center gap-1.5">
             {itemTypeIcons.map((iconName, i) => {
-              const Icon = iconMap[iconName] ?? Code;
+              const Icon = iconMap[iconName] ?? iconMap.Code;
               return <Icon key={i} className="size-3.5 text-muted-foreground" />;
             })}
           </div>

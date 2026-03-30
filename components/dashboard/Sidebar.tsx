@@ -3,13 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  LinkIcon,
   Star,
   PanelLeft,
   Settings,
@@ -22,18 +15,9 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
+import { iconMap } from "@/lib/icon-map";
 import type { SidebarItemType } from "@/lib/db/items";
 import type { SidebarCollection } from "@/lib/db/collections";
-
-const iconMap: Record<string, React.ElementType> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: LinkIcon,
-};
 
 function typeToSlug(name: string) {
   return name.toLowerCase() + "s";
@@ -91,7 +75,7 @@ export function Sidebar({ itemTypes, collections, user }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto px-2 py-2">
         <ul className="space-y-0.5">
           {itemTypes.map((type) => {
-            const Icon = iconMap[type.icon] ?? Code;
+            const Icon = iconMap[type.icon] ?? iconMap.Code;
             const link = (
               <Link
                 href={`/items/${typeToSlug(type.name)}`}
