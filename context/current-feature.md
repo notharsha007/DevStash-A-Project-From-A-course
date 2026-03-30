@@ -1,25 +1,14 @@
-# Current Feature: Auth Credentials — Email/Password Provider
+# Current Feature
+
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Add Credentials provider for email/password authentication
-- Add `password` field to User model (migration if needed)
-- Update `auth.config.ts` with Credentials provider placeholder (`authorize: () => null`)
-- Update `auth.ts` to override Credentials with bcrypt validation
-- Create registration API route at `POST /api/auth/register`
-- Registration validates passwords match, checks duplicates, hashes with bcryptjs
-- GitHub OAuth continues to work alongside credentials
-
 ## Notes
-
-- Uses bcryptjs (already installed)
-- Split pattern: `auth.config.ts` gets placeholder, `auth.ts` overrides with real logic
-- Registration accepts: name, email, password, confirmPassword
-- Test with curl + NextAuth default signin page
 
 ## History
 
@@ -35,3 +24,4 @@ In Progress
 - **2026-03-30** — Completed Add Pro Badge to Sidebar — PRO badge on File and Image types using ShadCN Badge component
 - **2026-03-30** — Completed Codebase Quick Wins — N+1 query fix with Prisma _count, shared iconMap extraction, DATABASE_URL guard
 - **2026-03-30** — Completed Auth Setup — NextAuth v5 with GitHub OAuth, Prisma adapter, JWT strategy, proxy route protection
+- **2026-03-30** — Completed Auth Credentials — Email/password Credentials provider with split pattern, registration API route
