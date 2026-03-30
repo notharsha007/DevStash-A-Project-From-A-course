@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 import type { SidebarItemType } from "@/lib/db/items";
 import type { SidebarCollection } from "@/lib/db/collections";
@@ -101,6 +102,11 @@ export function Sidebar({ itemTypes, collections, user }: SidebarProps) {
                 {!isCollapsed && (
                   <>
                     <span className="flex-1">{type.name + "s"}</span>
+                    {(type.name === "file" || type.name === "image") && (
+                      <Badge variant="secondary" className="h-4 px-1.5 text-[10px] font-semibold tracking-wide">
+                        PRO
+                      </Badge>
+                    )}
                     <span className="text-xs text-muted-foreground">{type.count}</span>
                   </>
                 )}
