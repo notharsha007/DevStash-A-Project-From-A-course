@@ -1,24 +1,5 @@
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  LinkIcon,
-  Pin,
-  Star,
-} from "lucide-react";
-
-const iconMap: Record<string, React.ElementType> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: LinkIcon,
-};
+import { Pin, Star } from "lucide-react";
+import { iconMap } from "@/lib/icon-map";
 
 interface ItemRowProps {
   title: string;
@@ -63,7 +44,7 @@ export function ItemRow({
   typeColor,
   updatedAt,
 }: ItemRowProps) {
-  const Icon = iconMap[typeIcon] ?? Code;
+  const Icon = iconMap[typeIcon] ?? iconMap.Code;
 
   return (
     <div

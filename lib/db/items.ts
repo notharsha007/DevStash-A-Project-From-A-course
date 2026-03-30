@@ -95,9 +95,8 @@ export async function getItemTypesWithCounts(
   const types = await prisma.itemType.findMany({
     where: { isSystem: true },
     include: {
-      items: {
-        where: { userId },
-        select: { id: true },
+      _count: {
+        select: { items: { where: { userId } } },
       },
     },
   });
@@ -107,7 +106,7 @@ export async function getItemTypesWithCounts(
     name: type.name,
     icon: type.icon,
     color: type.color,
-    count: type.items.length,
+    count: type._count.items,
   }));
 
   mapped.sort((a, b) => {
