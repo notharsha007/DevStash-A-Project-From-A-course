@@ -27,3 +27,4 @@ Idle
 - **2026-03-30** — Completed Auth Credentials — Email/password Credentials provider with split pattern, registration API route
 - **2026-03-30** — Completed Auth UI — Custom sign-in/register pages, UserAvatar component, sidebar user dropdown with sign out, session-based dashboard layout, sonner toasts
 - **2026-03-30** — Completed Email Verification — Resend-powered verification on register, check-email/verify-email pages, unverified sign-in block, resend option, clean-users script
+- **2026-03-30** — Completed Email Verification Toggle — REQUIRE_EMAIL_VERIFICATION env var to disable verification during development
