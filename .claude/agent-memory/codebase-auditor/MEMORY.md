@@ -1,0 +1,1 @@
+- [Codebase Architecture](project_architecture.md) — DevStash Next.js 16 app: 4 pages, 13 components, 5 lib files; no API routes, no auth yet

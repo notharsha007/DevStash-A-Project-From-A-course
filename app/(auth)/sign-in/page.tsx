@@ -30,6 +30,9 @@ function SignInForm() {
     if (searchParams.get("verified") === "true") {
       toast.success("Email verified! You can now sign in.", { id: "verified" });
     }
+    if (searchParams.get("registered") === "true") {
+      toast.success("Account created! Sign in to get started.", { id: "registered" });
+    }
   }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
