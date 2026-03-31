@@ -1,5 +1,67 @@
 import { prisma } from "@/lib/prisma";
 
+export interface ItemDetail {
+  id: string;
+  title: string;
+  description: string | null;
+  content: string | null;
+  contentType: string;
+  language: string | null;
+  url: string | null;
+  fileName: string | null;
+  fileUrl: string | null;
+  isFavorite: boolean;
+  isPinned: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  itemType: { id: string; name: string; icon: string; color: string };
+  tags: string[];
+  collections: { id: string; name: string }[];
+}
+
+export async function getItemDetail(
+  userId: string,
+  itemId: string
+): Promise<ItemDetail | null> {
+  const item = await prisma.item.findFirst({
+    where: { id: itemId, userId },
+    include: {
+      itemType: true,
+      tags: { include: { tag: true } },
+      collections: { include: { collection: true } },
+    },
+  });
+
+  if (!item) return null;
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    content: item.content,
+    contentType: item.contentType,
+    language: item.language,
+    url: item.url,
+    fileName: item.fileName,
+    fileUrl: item.fileUrl,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    itemType: {
+      id: item.itemType.id,
+      name: item.itemType.name,
+      icon: item.itemType.icon,
+      color: item.itemType.color,
+    },
+    tags: item.tags.map((t) => t.tag.name),
+    collections: item.collections.map((c) => ({
+      id: c.collection.id,
+      name: c.collection.name,
+    })),
+  };
+}
+
 export interface DashboardItem {
   id: string;
   title: string;

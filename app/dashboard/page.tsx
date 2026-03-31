@@ -5,7 +5,7 @@ import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items";
 import { prisma } from "@/lib/prisma";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
-import { ItemRow } from "@/components/dashboard/ItemRow";
+import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
 
 export default async function DashboardPage() {
   // TODO: replace with authenticated user once auth is set up
@@ -75,20 +75,13 @@ export default async function DashboardPage() {
             <Pin className="size-4 text-muted-foreground" />
             <h2 className="text-lg font-semibold">Pinned</h2>
           </div>
-          <div className="mt-4 space-y-2">
-            {pinnedItems.map((item) => (
-              <ItemRow
-                key={item.id}
-                title={item.title}
-                description={item.description}
-                tags={item.tags}
-                isPinned={item.isPinned}
-                isFavorite={item.isFavorite}
-                typeIcon={item.typeIcon}
-                typeColor={item.typeColor}
-                updatedAt={item.updatedAt}
-              />
-            ))}
+          <div className="mt-4">
+            <ItemsClientWrapper
+              items={pinnedItems.map((item) => ({
+                ...item,
+                updatedAt: item.updatedAt.toISOString(),
+              }))}
+            />
           </div>
         </section>
       )}
@@ -99,20 +92,13 @@ export default async function DashboardPage() {
           <Clock className="size-4 text-muted-foreground" />
           <h2 className="text-lg font-semibold">Recent Items</h2>
         </div>
-        <div className="mt-4 space-y-2">
-          {recentItems.map((item) => (
-            <ItemRow
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              tags={item.tags}
-              isPinned={item.isPinned}
-              isFavorite={item.isFavorite}
-              typeIcon={item.typeIcon}
-              typeColor={item.typeColor}
-              updatedAt={item.updatedAt}
-            />
-          ))}
+        <div className="mt-4">
+          <ItemsClientWrapper
+            items={recentItems.map((item) => ({
+              ...item,
+              updatedAt: item.updatedAt.toISOString(),
+            }))}
+          />
         </div>
       </section>
     </main>

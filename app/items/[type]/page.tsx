@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { getItemsByType } from "@/lib/db/items";
-import { ItemRow } from "@/components/dashboard/ItemRow";
+import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
 
 // Converts a URL slug to the ItemType name stored in the DB
 // e.g. "snippets" → "Snippet", "links" → "Link"
@@ -52,20 +52,14 @@ export default async function ItemsTypePage({ params }: Props) {
           <p className="mt-1 text-sm">Items you add will appear here.</p>
         </div>
       ) : (
-        <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <ItemRow
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              tags={item.tags}
-              isPinned={item.isPinned}
-              isFavorite={item.isFavorite}
-              typeIcon={item.typeIcon}
-              typeColor={item.typeColor}
-              updatedAt={item.updatedAt}
-            />
-          ))}
+        <div className="mt-6">
+          <ItemsClientWrapper
+            items={items.map((item) => ({
+              ...item,
+              updatedAt: item.updatedAt.toISOString(),
+            }))}
+            containerClassName="grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+          />
         </div>
       )}
     </main>
