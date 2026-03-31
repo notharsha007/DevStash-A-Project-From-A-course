@@ -1,28 +1,14 @@
-# Current Feature: Item Create
+# Current Feature
+
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Dialog opens from "New Item" button in top bar using shadcn Dialog
-- Type selector with options: snippet, prompt, command, note, link
-- Fields shown conditionally based on selected type:
-  - All types: title (required), description, tags
-  - snippet/command: content + language
-  - prompt/note: content
-  - link: URL (required)
-- `createItem` server action with Zod validation
-- `createItem` query function in `lib/db/items.ts`
-- Toast on success, modal closes and list refreshes
-
 ## Notes
-
-- Pro types (file, image) are excluded from the type selector
-- Follow existing patterns from `updateItem` server action and `deleteItem` for auth guard + ownership
-- Tags use connect-or-create pattern (same as updateItem)
-- Modal must be a client component; trigger can live in the items page top bar
 
 ## History
 
@@ -53,3 +39,4 @@ In Progress
 - **2026-03-31** — Completed Item Drawer — Right-side Sheet drawer opens on ItemCard click; `GET /api/items/[id]` route with auth; `getItemDetail` Prisma query; `ItemsClientWrapper` client state manager; action bar (Favorite, Pin, Copy, Edit, Delete); line-numbered content block; pill badges; Description, Tags, Collections, Details sections; 6 Vitest unit tests
 - **2026-03-31** — Completed Item Drawer Edit Mode — Inline edit mode toggled by Edit button; Save/Cancel action bar; type-specific fields (Content, Language, URL); Zod-validated `updateItem` server action; `updateItem` DB query with tag disconnect-all/connect-or-create; shadcn Textarea component; `router.refresh()` after save; 10 new Vitest tests
 - **2026-03-31** — Completed Item Delete — AlertDialog confirmation showing item title; `deleteItem` server action with auth guard and ownership check; `deleteItem` DB query; success toast + drawer close + `router.refresh()`; error toast on failure; 4 new Vitest tests
+- **2026-03-31** — Completed Item Create — shadcn Dialog with 5-type selector (snippet/prompt/command/note/link), conditional fields per type (content+language, content, URL), Zod-validated `createItem` server action, `createItem` DB query with tag connect-or-create, toast + modal close + `router.refresh()`
