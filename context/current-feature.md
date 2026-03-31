@@ -30,3 +30,4 @@ Idle
 - **2026-03-30** — Completed Email Verification Toggle — REQUIRE_EMAIL_VERIFICATION env var to disable verification during development
 - **2026-03-31** — Completed Forgot Password — Email-based reset flow using VerificationToken model with `reset:` prefix, 1hr expiry, forgot-password + reset-password pages, API routes, Resend email
 - **2026-03-31** — Completed Profile Page — User info card with avatar/joined date, usage stats with per-type breakdown, change password dialog (email users only), delete account confirmation dialog
+- **2026-03-31** — Completed Auth Security Fixes — SHA-256 token hashing, centralized proxy.ts route protection, server-side password minimum, hasPassword boolean in ProfileData, email enumeration fix, BCRYPT_ROUNDS constant, email query param validation, non-null assertion guards
