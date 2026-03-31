@@ -34,7 +34,8 @@ export default function ForgotPasswordPage() {
     setLoading(false);
 
     if (!res.ok) {
-      toast.error("Something went wrong. Please try again.");
+      const data = await res.json().catch(() => ({}));
+      toast.error(data.error || "Something went wrong. Please try again.");
       return;
     }
 

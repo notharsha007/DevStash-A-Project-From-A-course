@@ -4,8 +4,12 @@ import { prisma } from "@/lib/prisma"
 import { generateVerificationToken } from "@/lib/tokens"
 import { sendVerificationEmail } from "@/lib/mail"
 import { BCRYPT_ROUNDS } from "@/lib/auth-utils"
+import { registerLimiter, getIp, checkRateLimit, rateLimitResponse } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
+  const { limited, reset } = await checkRateLimit(registerLimiter, getIp(request))
+  if (limited) return rateLimitResponse(reset)
+
   const body = await request.json()
   const { name, email, password, confirmPassword } = body
 

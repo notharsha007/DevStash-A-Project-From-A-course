@@ -2,9 +2,15 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { generateVerificationToken } from "@/lib/tokens"
 import { sendVerificationEmail } from "@/lib/mail"
+import { resendVerificationLimiter, getIp, checkRateLimit, rateLimitResponse } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
   const { email } = await request.json()
+
+  const ip = getIp(request)
+  const key = email ? `${ip}:${email}` : ip
+  const { limited, reset } = await checkRateLimit(resendVerificationLimiter, key)
+  if (limited) return rateLimitResponse(reset)
 
   if (!email) {
     return NextResponse.json(

@@ -53,6 +53,10 @@ function SignInForm() {
         router.push(`/check-email?email=${encodeURIComponent(email)}`);
         return;
       }
+      if (result.code === "RATE_LIMITED") {
+        setError("Too many login attempts. Please try again later.");
+        return;
+      }
       setError("Invalid email or password");
       return;
     }
