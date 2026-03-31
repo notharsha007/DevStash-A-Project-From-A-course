@@ -148,6 +148,79 @@ export async function getItemsByType(
   return items.map(toDashboardItem);
 }
 
+export interface UpdateItemData {
+  title: string;
+  description?: string | null;
+  content?: string | null;
+  url?: string | null;
+  language?: string | null;
+  tags: string[];
+}
+
+export async function updateItem(
+  userId: string,
+  itemId: string,
+  data: UpdateItemData
+): Promise<ItemDetail | null> {
+  // Verify ownership first
+  const existing = await prisma.item.findFirst({ where: { id: itemId, userId } });
+  if (!existing) return null;
+
+  const item = await prisma.item.update({
+    where: { id: itemId },
+    data: {
+      title: data.title,
+      description: data.description ?? null,
+      content: data.content ?? null,
+      url: data.url ?? null,
+      language: data.language ?? null,
+      tags: {
+        deleteMany: {},
+        create: data.tags.map((name) => ({
+          tag: {
+            connectOrCreate: {
+              where: { name },
+              create: { name },
+            },
+          },
+        })),
+      },
+    },
+    include: {
+      itemType: true,
+      tags: { include: { tag: true } },
+      collections: { include: { collection: true } },
+    },
+  });
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    content: item.content,
+    contentType: item.contentType,
+    language: item.language,
+    url: item.url,
+    fileName: item.fileName,
+    fileUrl: item.fileUrl,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    itemType: {
+      id: item.itemType.id,
+      name: item.itemType.name,
+      icon: item.itemType.icon,
+      color: item.itemType.color,
+    },
+    tags: item.tags.map((t) => t.tag.name),
+    collections: item.collections.map((c) => ({
+      id: c.collection.id,
+      name: c.collection.name,
+    })),
+  };
+}
+
 export async function getItemStats(userId: string) {
   const [totalItems, favoriteItems] = await Promise.all([
     prisma.item.count({ where: { userId } }),
