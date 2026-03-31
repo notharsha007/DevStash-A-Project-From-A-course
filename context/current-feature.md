@@ -1,24 +1,14 @@
-# Current Feature: Profile Page
+# Current Feature
+
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Create profile page at `/profile` route (protected, requires authentication)
-- Display user info: email, name, avatar (GitHub image or initials fallback), account creation date
-- Show usage stats: total items, total collections, per-type item breakdown (snippets, prompts, notes, commands, links, files, images)
-- Add change password action — email/password users only (hide for GitHub OAuth users)
-- Add delete account action with confirmation dialog to prevent accidental deletion
-
 ## Notes
-
-- Avatar: use `user.image` if present (GitHub OAuth), otherwise generate initials from name or email
-- Change password only shown when `user.hashedPassword` is set (i.e. not a pure OAuth account)
-- Delete account confirmation dialog — use shadcn/ui AlertDialog
-- Item type breakdown queries via Prisma `_count` or grouped query on `ItemType`
-- Follow existing data-fetching pattern: server component fetches directly with Prisma, client components for interactive actions (change password form, delete confirmation)
 
 ## History
 
@@ -39,3 +29,4 @@ In Progress
 - **2026-03-30** — Completed Email Verification — Resend-powered verification on register, check-email/verify-email pages, unverified sign-in block, resend option, clean-users script
 - **2026-03-30** — Completed Email Verification Toggle — REQUIRE_EMAIL_VERIFICATION env var to disable verification during development
 - **2026-03-31** — Completed Forgot Password — Email-based reset flow using VerificationToken model with `reset:` prefix, 1hr expiry, forgot-password + reset-password pages, API routes, Resend email
+- **2026-03-31** — Completed Profile Page — User info card with avatar/joined date, usage stats with per-type breakdown, change password dialog (email users only), delete account confirmation dialog
