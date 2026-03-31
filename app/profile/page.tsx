@@ -30,7 +30,7 @@ export default async function ProfilePage() {
     redirect("/sign-in");
   }
 
-  const hasPassword = !!profile.hashedPassword;
+  const { hasPassword } = profile;
 
   return (
     <main className="flex-1 overflow-y-auto p-6">

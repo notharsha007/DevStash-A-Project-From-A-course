@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { getPasswordResetTokenByToken } from "@/lib/tokens";
+import { BCRYPT_ROUNDS } from "@/lib/auth-utils";
 
 export async function POST(req: Request) {
   const { token, password } = await req.json();
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
   if (new Date() > resetToken.expires) {
     // Clean up expired token
     await prisma.verificationToken.delete({
-      where: { token },
+      where: { token: resetToken.token },
     });
     return NextResponse.json(
       { error: "Reset link has expired" },
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
   // Update password and delete token in one go
   await prisma.$transaction([
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
       data: { hashedPassword },
     }),
     prisma.verificationToken.delete({
-      where: { token },
+      where: { token: resetToken.token },
     }),
   ]);
 

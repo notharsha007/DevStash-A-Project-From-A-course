@@ -17,7 +17,8 @@ import { Button } from "@/components/ui/button";
 
 function CheckEmailContent() {
   const searchParams = useSearchParams();
-  const email = searchParams.get("email") || "";
+  const rawEmail = searchParams.get("email") ?? "";
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail) ? rawEmail : "";
   const [resending, setResending] = useState(false);
 
   async function handleResend() {

@@ -18,7 +18,10 @@ export default async function ProfileLayout({
     redirect("/sign-in");
   }
 
-  const userId = session.user.id!;
+  const userId = session.user.id;
+  if (!userId) {
+    redirect("/sign-in");
+  }
 
   const [itemTypes, sidebarCollections] = await Promise.all([
     getItemTypesWithCounts(userId),

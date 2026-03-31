@@ -5,7 +5,7 @@ export interface ProfileData {
   name: string | null;
   email: string;
   image: string | null;
-  hashedPassword: string | null;
+  hasPassword: boolean;
   createdAt: Date;
   totalItems: number;
   totalCollections: number;
@@ -62,7 +62,7 @@ export async function getProfileData(userId: string): Promise<ProfileData | null
     name: user.name,
     email: user.email,
     image: user.image,
-    hashedPassword: user.hashedPassword,
+    hasPassword: !!user.hashedPassword,
     createdAt: user.createdAt,
     totalItems: user._count.items,
     totalCollections: user._count.collections,

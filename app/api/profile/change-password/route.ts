@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { BCRYPT_ROUNDS } from "@/lib/auth-utils";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -47,7 +48,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  const hashedPassword = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
 
   await prisma.user.update({
     where: { id: session.user.id },

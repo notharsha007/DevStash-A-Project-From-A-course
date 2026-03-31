@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
   if (new Date() > verificationToken.expires) {
     await prisma.verificationToken.delete({
-      where: { token },
+      where: { token: verificationToken.token },
     })
     return NextResponse.json(
       { error: "Token has expired" },
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
   })
 
   await prisma.verificationToken.delete({
-    where: { token },
+    where: { token: verificationToken.token },
   })
 
   return NextResponse.json({ success: true })
