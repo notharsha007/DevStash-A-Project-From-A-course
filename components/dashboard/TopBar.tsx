@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { Search, Plus, FolderPlus, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
+import { CreateItemDialog } from "@/components/items/CreateItemDialog";
 
 export function TopBar() {
   const { toggleMobile } = useSidebar();
+  const [createOpen, setCreateOpen] = useState(false);
 
   return (
     <header className="flex h-14 items-center gap-4 border-b border-border px-4">
@@ -52,7 +55,7 @@ export function TopBar() {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button size="sm" />
+              <Button size="sm" onClick={() => setCreateOpen(true)} />
             }
           >
             <Plus className="size-4" />
@@ -61,6 +64,8 @@ export function TopBar() {
           <TooltipContent className="sm:hidden">New Item</TooltipContent>
         </Tooltip>
       </div>
+
+      <CreateItemDialog open={createOpen} onOpenChange={setCreateOpen} />
     </header>
   );
 }

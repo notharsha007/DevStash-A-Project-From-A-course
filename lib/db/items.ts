@@ -1,3 +1,4 @@
+import { ContentType } from "../../generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
 
 export interface ItemDetail {
@@ -218,6 +219,81 @@ export async function updateItem(
       id: c.collection.id,
       name: c.collection.name,
     })),
+  };
+}
+
+export interface CreateItemData {
+  typeName: string;
+  title: string;
+  description?: string | null;
+  content?: string | null;
+  url?: string | null;
+  language?: string | null;
+  tags: string[];
+}
+
+export async function createItem(
+  userId: string,
+  data: CreateItemData
+): Promise<ItemDetail | null> {
+  const itemType = await prisma.itemType.findFirst({
+    where: { name: { equals: data.typeName, mode: "insensitive" }, isSystem: true },
+  });
+
+  if (!itemType) return null;
+
+  const contentType = itemType.name.toLowerCase() === "link" ? ContentType.URL : ContentType.TEXT;
+
+  const item = await prisma.item.create({
+    data: {
+      title: data.title,
+      description: data.description ?? null,
+      content: data.content ?? null,
+      url: data.url ?? null,
+      language: data.language ?? null,
+      contentType,
+      userId,
+      itemTypeId: itemType.id,
+      tags: {
+        create: data.tags.map((name) => ({
+          tag: {
+            connectOrCreate: {
+              where: { name },
+              create: { name },
+            },
+          },
+        })),
+      },
+    },
+    include: {
+      itemType: true,
+      tags: { include: { tag: true } },
+      collections: { include: { collection: true } },
+    },
+  });
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    content: item.content,
+    contentType: item.contentType,
+    language: item.language,
+    url: item.url,
+    fileName: item.fileName,
+    fileUrl: item.fileUrl,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    itemType: {
+      id: item.itemType.id,
+      name: item.itemType.name,
+      icon: item.itemType.icon,
+      color: item.itemType.color,
+    },
+    tags: item.tags.map((t) => t.tag.name),
+    collections: [],
   };
 }
 
