@@ -1,23 +1,14 @@
-# Current Feature: Items List View
+# Current Feature
+
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Create dynamic route `/items/[type]` (e.g., `/items/snippets`, `/items/notes`)
-- Fetch and display items filtered by type from the database
-- Render a responsive grid of ItemCard components (2 columns on md+)
-- Each card has a left border colored by its item type
-- Follow existing codebase patterns (server components, Prisma, iconMap, etc.)
-
 ## Notes
-
-- Route param `[type]` should map to an ItemType name (e.g., "snippets" → "Snippet")
-- Reuse existing ItemCard component or adapt the dashboard item cards
-- Sidebar already links to `/items/[type]` routes — this page makes them work
-- No pagination required in spec; show all items for the type
 
 ## History
 
@@ -42,3 +33,4 @@ In Progress
 - **2026-03-31** — Completed Auth Security Fixes — SHA-256 token hashing, centralized proxy.ts route protection, server-side password minimum, hasPassword boolean in ProfileData, email enumeration fix, BCRYPT_ROUNDS constant, email query param validation, non-null assertion guards
 - **2026-03-31** — Completed Rate Limiting for Auth — Upstash Redis sliding window limits on all 5 auth endpoints, reusable lib/rate-limit.ts utility, 429 + Retry-After responses, fail-open on Upstash errors, frontend toast/error handling for rate limit responses
 - **2026-03-31** — Fixed GitHub OAuth Redirect — Replaced client-side signIn() with signInWithGitHub server action (actions/auth.ts) using redirectTo, fixing double-click issue on first OAuth login
+- **2026-03-31** — Completed Items List View — Dynamic `/items/[type]` route with auth-guarded layout, type-filtered Prisma query, responsive 2-column ItemRow grid with type-colored left borders, empty state, and 404 for unknown slugs
