@@ -14,9 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X } from "lucide-react";
+import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { updateItem } from "@/actions/items";
+import { updateItem, deleteItem } from "@/actions/items";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface ItemDetailResponse {
   id: string;
@@ -83,9 +92,11 @@ function DrawerSkeleton() {
 function ViewContent({
   item,
   onEdit,
+  onDeleteRequest,
 }: {
   item: ItemDetailResponse;
   onEdit: () => void;
+  onDeleteRequest: () => void;
 }) {
   return (
     <>
@@ -147,6 +158,7 @@ function ViewContent({
           variant="ghost"
           size="sm"
           className="ml-auto text-destructive hover:text-destructive"
+          onClick={onDeleteRequest}
         >
           <Trash2 className="size-4" />
         </Button>
@@ -539,6 +551,8 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
   const [item, setItem] = useState<ItemDetailResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!itemId || !open) return;
@@ -562,24 +576,73 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
     router.refresh();
   }
 
+  async function handleDeleteConfirm() {
+    if (!itemId) return;
+    setDeleting(true);
+    const result = await deleteItem(itemId);
+    setDeleting(false);
+    if (!result.success) {
+      toast.error(result.error ?? "Failed to delete item");
+      return;
+    }
+    setDeleteConfirmOpen(false);
+    onOpenChange(false);
+    toast.success("Item deleted");
+    router.refresh();
+  }
+
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent
-        side="right"
-        className="flex w-[580px] flex-col p-0 sm:max-w-[580px]"
-      >
-        {loading || !item ? (
-          <DrawerSkeleton />
-        ) : isEditing ? (
-          <EditContent
-            item={item}
-            onCancel={() => setIsEditing(false)}
-            onSaved={handleSaved}
-          />
-        ) : (
-          <ViewContent item={item} onEdit={() => setIsEditing(true)} />
-        )}
-      </SheetContent>
-    </Sheet>
+    <>
+      <Sheet open={open} onOpenChange={handleOpenChange}>
+        <SheetContent
+          side="right"
+          className="flex w-[580px] flex-col p-0 sm:max-w-[580px]"
+        >
+          {loading || !item ? (
+            <DrawerSkeleton />
+          ) : isEditing ? (
+            <EditContent
+              item={item}
+              onCancel={() => setIsEditing(false)}
+              onSaved={handleSaved}
+            />
+          ) : (
+            <ViewContent
+              item={item}
+              onEdit={() => setIsEditing(true)}
+              onDeleteRequest={() => setDeleteConfirmOpen(true)}
+            />
+          )}
+        </SheetContent>
+      </Sheet>
+
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete &ldquo;{item?.title}&rdquo;?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the item. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={deleting}
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
