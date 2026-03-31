@@ -1,1 +1,2 @@
 - [Codebase Architecture](project_architecture.md) — DevStash Next.js 16 app: 4 pages, 13 components, 5 lib files; no API routes, no auth yet
+- [Auth Security Audit Findings](project_auth_findings.md) — 2026-03-31 audit: plaintext token storage (critical), missing middleware, no Zod on API routes
