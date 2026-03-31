@@ -32,3 +32,4 @@ Idle
 - **2026-03-31** — Completed Profile Page — User info card with avatar/joined date, usage stats with per-type breakdown, change password dialog (email users only), delete account confirmation dialog
 - **2026-03-31** — Completed Auth Security Fixes — SHA-256 token hashing, centralized proxy.ts route protection, server-side password minimum, hasPassword boolean in ProfileData, email enumeration fix, BCRYPT_ROUNDS constant, email query param validation, non-null assertion guards
 - **2026-03-31** — Completed Rate Limiting for Auth — Upstash Redis sliding window limits on all 5 auth endpoints, reusable lib/rate-limit.ts utility, 429 + Retry-After responses, fail-open on Upstash errors, frontend toast/error handling for rate limit responses
+- **2026-03-31** — Fixed GitHub OAuth Redirect — Replaced client-side signIn() with signInWithGitHub server action (actions/auth.ts) using redirectTo, fixing double-click issue on first OAuth login
