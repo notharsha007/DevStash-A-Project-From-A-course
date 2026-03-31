@@ -50,11 +50,11 @@ Example v4 configuration:
 
 ## File Organization
 
-- Components: `src/components/[feature]/ComponentName.tsx`
-- Pages: `src/app/[route]/page.tsx`
-- Server Actions: `src/actions/[feature].ts`
-- Types: `src/types/[feature].ts`
-- Lib/Utils: `src/lib/[utility].ts`
+- Components: `components/[feature]/ComponentName.tsx`
+- Pages: `app/[route]/page.tsx`
+- Server Actions: `actions/[feature].ts`
+- Types: `types/[feature].ts`
+- Lib/Utils: `lib/[utility].ts`
 
 ## Naming
 
@@ -89,6 +89,15 @@ Example v4 configuration:
 - Use try/catch in Server Actions
 - Return `{ success, data, error }` pattern from actions
 - Display user-friendly error messages via toast
+
+## Testing
+
+- Framework: **Vitest** (`npm test` / `npm run test:watch`)
+- Scope: server actions (`actions/**`) and utilities (`lib/**`) only — no component tests
+- Co-locate tests next to source: `lib/utils.test.ts`, `actions/auth.test.ts`, etc.
+- Mock external dependencies (Prisma, Resend, Redis) with `vi.mock()`
+- Test file pattern: `*.test.ts` (never `*.spec.ts`)
+- Run `npm test` before committing when tests exist for the changed code
 
 ## Code Quality
 

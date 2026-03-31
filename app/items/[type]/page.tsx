@@ -52,7 +52,7 @@ export default async function ItemsTypePage({ params }: Props) {
           <p className="mt-1 text-sm">Items you add will appear here.</p>
         </div>
       ) : (
-        <div className="mt-6 grid gap-3 md:grid-cols-2">
+        <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <ItemRow
               key={item.id}
