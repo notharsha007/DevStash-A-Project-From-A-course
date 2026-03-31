@@ -3,8 +3,12 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { getPasswordResetTokenByToken } from "@/lib/tokens";
 import { BCRYPT_ROUNDS } from "@/lib/auth-utils";
+import { resetPasswordLimiter, getIp, checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const { limited, reset } = await checkRateLimit(resetPasswordLimiter, getIp(req))
+  if (limited) return rateLimitResponse(reset)
+
   const { token, password } = await req.json();
 
   if (!token || !password) {
