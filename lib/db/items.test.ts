@@ -4,12 +4,13 @@ vi.mock("@/lib/prisma", () => ({
   prisma: {
     item: {
       findFirst: vi.fn(),
+      update: vi.fn(),
     },
   },
 }));
 
 import { prisma } from "@/lib/prisma";
-import { getItemDetail } from "./items";
+import { getItemDetail, updateItem } from "./items";
 
 const mockPrismaItem = {
   id: "item-1",
@@ -120,6 +121,87 @@ describe("getItemDetail", () => {
     const result = await getItemDetail("user-1", "item-1");
 
     expect(result?.tags).toEqual([]);
+    expect(result?.collections).toEqual([]);
+  });
+});
+
+describe("updateItem", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns null when item is not found (ownership check fails)", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue(null);
+
+    const result = await updateItem("user-1", "nonexistent", {
+      title: "Updated",
+      tags: [],
+    });
+
+    expect(result).toBeNull();
+    expect(prisma.item.update).not.toHaveBeenCalled();
+  });
+
+  it("enforces ownership by checking userId in findFirst before updating", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue(null);
+
+    await updateItem("user-123", "item-456", { title: "New title", tags: [] });
+
+    expect(prisma.item.findFirst).toHaveBeenCalledWith({
+      where: { id: "item-456", userId: "user-123" },
+    });
+  });
+
+  it("calls prisma.item.update with tag disconnect-all and connect-or-create", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue({ id: "item-1" } as never);
+    vi.mocked(prisma.item.update).mockResolvedValue({
+      ...mockPrismaItem,
+      title: "Updated Title",
+      tags: [],
+      collections: [],
+    });
+
+    await updateItem("user-1", "item-1", {
+      title: "Updated Title",
+      tags: ["react", "hooks"],
+    });
+
+    expect(prisma.item.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "item-1" },
+        data: expect.objectContaining({
+          title: "Updated Title",
+          tags: {
+            deleteMany: {},
+            create: [
+              { tag: { connectOrCreate: { where: { name: "react" }, create: { name: "react" } } } },
+              { tag: { connectOrCreate: { where: { name: "hooks" }, create: { name: "hooks" } } } },
+            ],
+          },
+        }),
+      })
+    );
+  });
+
+  it("returns updated ItemDetail with flattened tags and collections", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue({ id: "item-1" } as never);
+    vi.mocked(prisma.item.update).mockResolvedValue({
+      ...mockPrismaItem,
+      title: "New Title",
+      description: "New desc",
+      tags: [{ itemId: "item-1", tagId: "tag-3", tag: { id: "tag-3", name: "typescript" } }],
+      collections: [],
+    });
+
+    const result = await updateItem("user-1", "item-1", {
+      title: "New Title",
+      description: "New desc",
+      tags: ["typescript"],
+    });
+
+    expect(result?.title).toBe("New Title");
+    expect(result?.description).toBe("New desc");
+    expect(result?.tags).toEqual(["typescript"]);
     expect(result?.collections).toEqual([]);
   });
 });

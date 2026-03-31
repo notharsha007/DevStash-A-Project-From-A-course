@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Sheet,
   SheetContent,
@@ -10,7 +11,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X } from "lucide-react";
+import { toast } from "sonner";
+import { updateItem } from "@/actions/items";
 
 interface ItemDetailResponse {
   id: string;
@@ -35,6 +41,10 @@ interface ItemDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+const TEXT_CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
+const LANGUAGE_TYPES = ["snippet", "command"];
+const URL_TYPES = ["link"];
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -68,7 +78,15 @@ function DrawerSkeleton() {
   );
 }
 
-function DrawerContent({ item }: { item: ItemDetailResponse }) {
+// ─── View Mode ───────────────────────────────────────────────────────────────
+
+function ViewContent({
+  item,
+  onEdit,
+}: {
+  item: ItemDetailResponse;
+  onEdit: () => void;
+}) {
   return (
     <>
       {/* Header */}
@@ -121,7 +139,7 @@ function DrawerContent({ item }: { item: ItemDetailResponse }) {
           <Copy className="size-4" />
           Copy
         </Button>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-sm">
+        <Button variant="ghost" size="sm" className="gap-1.5 text-sm" onClick={onEdit}>
           <Pencil className="size-4" />
           Edit
         </Button>
@@ -249,27 +267,318 @@ function DrawerContent({ item }: { item: ItemDetailResponse }) {
   );
 }
 
+// ─── Edit Mode ───────────────────────────────────────────────────────────────
+
+interface EditState {
+  title: string;
+  description: string;
+  content: string;
+  url: string;
+  language: string;
+  tags: string;
+}
+
+function EditContent({
+  item,
+  onCancel,
+  onSaved,
+}: {
+  item: ItemDetailResponse;
+  onCancel: () => void;
+  onSaved: (updated: ItemDetailResponse) => void;
+}) {
+  const typeName = item.itemType.name.toLowerCase();
+  const showContent = TEXT_CONTENT_TYPES.includes(typeName);
+  const showLanguage = LANGUAGE_TYPES.includes(typeName);
+  const showUrl = URL_TYPES.includes(typeName);
+
+  const [saving, setSaving] = useState(false);
+  const [fields, setFields] = useState<EditState>({
+    title: item.title,
+    description: item.description ?? "",
+    content: item.content ?? "",
+    url: item.url ?? "",
+    language: item.language ?? "",
+    tags: item.tags.join(", "),
+  });
+
+  function set(key: keyof EditState, value: string) {
+    setFields((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    const result = await updateItem(item.id, {
+      title: fields.title,
+      description: fields.description || null,
+      content: fields.content || null,
+      url: fields.url || null,
+      language: fields.language || null,
+      tags: fields.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+    });
+    setSaving(false);
+
+    if (!result.success) {
+      const msg =
+        typeof result.error === "string"
+          ? result.error
+          : "Validation error — check your inputs";
+      toast.error(msg);
+      return;
+    }
+
+    const updated: ItemDetailResponse = {
+      ...result.data,
+      createdAt:
+        result.data.createdAt instanceof Date
+          ? result.data.createdAt.toISOString()
+          : String(result.data.createdAt),
+      updatedAt:
+        result.data.updatedAt instanceof Date
+          ? result.data.updatedAt.toISOString()
+          : String(result.data.updatedAt),
+    };
+
+    toast.success("Item saved");
+    onSaved(updated);
+  }
+
+  return (
+    <>
+      {/* Header */}
+      <SheetHeader className="border-b px-6 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <SheetTitle className="text-lg leading-tight">Edit Item</SheetTitle>
+            <div className="mt-2">
+              <Badge
+                variant="secondary"
+                className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                style={{
+                  backgroundColor: `${item.itemType.color}22`,
+                  color: item.itemType.color,
+                  border: `1px solid ${item.itemType.color}40`,
+                }}
+              >
+                {item.itemType.name}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      </SheetHeader>
+
+      {/* Save / Cancel bar */}
+      <div className="flex items-center gap-2 border-b px-4 py-2">
+        <Button
+          size="sm"
+          className="gap-1.5"
+          onClick={handleSave}
+          disabled={saving || fields.title.trim() === ""}
+        >
+          <Save className="size-4" />
+          {saving ? "Saving…" : "Save"}
+        </Button>
+        <Button variant="ghost" size="sm" className="gap-1.5" onClick={onCancel}>
+          <X className="size-4" />
+          Cancel
+        </Button>
+      </div>
+
+      {/* Form */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
+        {/* Title */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="edit-title"
+            className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          >
+            Title <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="edit-title"
+            value={fields.title}
+            onChange={(e) => set("title", e.target.value)}
+            placeholder="Item title"
+          />
+        </div>
+
+        {/* Description */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="edit-description"
+            className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          >
+            Description
+          </Label>
+          <Textarea
+            id="edit-description"
+            value={fields.description}
+            onChange={(e) => set("description", e.target.value)}
+            placeholder="Optional description"
+            rows={3}
+          />
+        </div>
+
+        {/* Content (text types only) */}
+        {showContent && (
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="edit-content"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              Content
+            </Label>
+            <Textarea
+              id="edit-content"
+              value={fields.content}
+              onChange={(e) => set("content", e.target.value)}
+              placeholder="Item content"
+              rows={10}
+              className="resize-y font-mono"
+            />
+          </div>
+        )}
+
+        {/* Language (snippet, command only) */}
+        {showLanguage && (
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="edit-language"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              Language
+            </Label>
+            <Input
+              id="edit-language"
+              value={fields.language}
+              onChange={(e) => set("language", e.target.value)}
+              placeholder="e.g. typescript"
+            />
+          </div>
+        )}
+
+        {/* URL (link only) */}
+        {showUrl && (
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="edit-url"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              URL
+            </Label>
+            <Input
+              id="edit-url"
+              type="url"
+              value={fields.url}
+              onChange={(e) => set("url", e.target.value)}
+              placeholder="https://example.com"
+            />
+          </div>
+        )}
+
+        {/* Tags */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="edit-tags"
+            className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          >
+            Tags
+          </Label>
+          <Input
+            id="edit-tags"
+            value={fields.tags}
+            onChange={(e) => set("tags", e.target.value)}
+            placeholder="react, hooks, typescript"
+          />
+          <p className="text-xs text-muted-foreground">Comma-separated</p>
+        </div>
+
+        {/* Non-editable: Collections */}
+        {item.collections.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Collections
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {item.collections.map((col) => (
+                <Badge
+                  key={col.id}
+                  variant="outline"
+                  className="rounded-full px-2.5 py-0.5 text-xs font-medium opacity-60"
+                >
+                  {col.name}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Non-editable: Dates */}
+        <div className="space-y-1 border-t pt-4 text-sm">
+          <div className="flex justify-between text-muted-foreground">
+            <span>Created</span>
+            <span>{formatDate(item.createdAt)}</span>
+          </div>
+          <div className="flex justify-between text-muted-foreground">
+            <span>Updated</span>
+            <span>{formatDate(item.updatedAt)}</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Main Drawer ─────────────────────────────────────────────────────────────
+
 export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
+  const router = useRouter();
   const [item, setItem] = useState<ItemDetailResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (!itemId || !open) return;
     setLoading(true);
     setItem(null);
+    setIsEditing(false);
     fetch(`/api/items/${itemId}`)
       .then((res) => res.json())
       .then((data) => setItem(data))
       .finally(() => setLoading(false));
   }, [itemId, open]);
 
+  function handleOpenChange(value: boolean) {
+    if (!value) setIsEditing(false);
+    onOpenChange(value);
+  }
+
+  function handleSaved(updated: ItemDetailResponse) {
+    setItem(updated);
+    setIsEditing(false);
+    router.refresh();
+  }
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="right"
         className="flex w-[580px] flex-col p-0 sm:max-w-[580px]"
       >
-        {loading || !item ? <DrawerSkeleton /> : <DrawerContent item={item} />}
+        {loading || !item ? (
+          <DrawerSkeleton />
+        ) : isEditing ? (
+          <EditContent
+            item={item}
+            onCancel={() => setIsEditing(false)}
+            onSaved={handleSaved}
+          />
+        ) : (
+          <ViewContent item={item} onEdit={() => setIsEditing(true)} />
+        )}
       </SheetContent>
     </Sheet>
   );
