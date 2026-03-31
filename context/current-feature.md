@@ -1,27 +1,14 @@
 # Current Feature
 
-Item Drawer
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Clicking an ItemCard opens a right-side Sheet drawer with full item data
-- Works on both dashboard and items list pages
-- Action bar with Favorite (star), Pin, Copy, Edit (pencil), Delete (trash, right-aligned)
-- Drawer shows skeleton/loading state while fetching
-- No page navigation — snappy, fetch-on-click
-
 ## Notes
-
-- Use shadcn Sheet component, opens from the right
-- Client wrapper component to manage drawer state (pages are server components)
-- Card data fetched by server component as before; full item detail fetched on click via `/api/items/[id]`
-- Query function in `lib/db/items.ts`; API route calls it with auth check
-- No code editor or item-specific content yet — just drawer detail display
-- Visual reference: `context/screenshots/dashboard-ui-drawer.png`
 
 ## History
 
@@ -49,3 +36,4 @@ In Progress
 - **2026-03-31** — Completed Items List View — Dynamic `/items/[type]` route with auth-guarded layout, type-filtered Prisma query, responsive 2-column ItemRow grid with type-colored left borders, empty state, and 404 for unknown slugs
 - **2026-03-31** — Completed Vitest Setup — unit testing for server actions and utilities; npm test / test:watch / test:coverage scripts
 - **2026-03-31** — Completed Item List 3-Column Layout — added `lg:grid-cols-3` to items list view (1 col mobile, 2 col md, 3 col lg+); fixed pre-existing build error by moving `url`/`directUrl` from prisma.config.ts into schema.prisma
+- **2026-03-31** — Completed Item Drawer — Right-side Sheet drawer opens on ItemCard click; `GET /api/items/[id]` route with auth; `getItemDetail` Prisma query; `ItemsClientWrapper` client state manager; action bar (Favorite, Pin, Copy, Edit, Delete); line-numbered content block; pill badges; Description, Tags, Collections, Details sections; 6 Vitest unit tests
