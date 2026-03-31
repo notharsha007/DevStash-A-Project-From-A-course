@@ -1,14 +1,23 @@
-# Current Feature
-
-None — ready for next feature.
+# Current Feature: Items List View
 
 ## Status
 
-Idle
+In Progress
 
 ## Goals
 
+- Create dynamic route `/items/[type]` (e.g., `/items/snippets`, `/items/notes`)
+- Fetch and display items filtered by type from the database
+- Render a responsive grid of ItemCard components (2 columns on md+)
+- Each card has a left border colored by its item type
+- Follow existing codebase patterns (server components, Prisma, iconMap, etc.)
+
 ## Notes
+
+- Route param `[type]` should map to an ItemType name (e.g., "snippets" → "Snippet")
+- Reuse existing ItemCard component or adapt the dashboard item cards
+- Sidebar already links to `/items/[type]` routes — this page makes them work
+- No pagination required in spec; show all items for the type
 
 ## History
 
