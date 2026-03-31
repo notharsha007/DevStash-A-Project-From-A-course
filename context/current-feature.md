@@ -34,3 +34,5 @@ Idle
 - **2026-03-31** — Completed Rate Limiting for Auth — Upstash Redis sliding window limits on all 5 auth endpoints, reusable lib/rate-limit.ts utility, 429 + Retry-After responses, fail-open on Upstash errors, frontend toast/error handling for rate limit responses
 - **2026-03-31** — Fixed GitHub OAuth Redirect — Replaced client-side signIn() with signInWithGitHub server action (actions/auth.ts) using redirectTo, fixing double-click issue on first OAuth login
 - **2026-03-31** — Completed Items List View — Dynamic `/items/[type]` route with auth-guarded layout, type-filtered Prisma query, responsive 2-column ItemRow grid with type-colored left borders, empty state, and 404 for unknown slugs
+- **2026-03-31** — Completed Vitest Setup — unit testing for server actions and utilities; npm test / test:watch / test:coverage scripts
+- **2026-03-31** — Completed Item List 3-Column Layout — added `lg:grid-cols-3` to items list view (1 col mobile, 2 col md, 3 col lg+); fixed pre-existing build error by moving `url`/`directUrl` from prisma.config.ts into schema.prisma
