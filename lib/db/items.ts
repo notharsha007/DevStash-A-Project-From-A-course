@@ -70,6 +70,22 @@ export async function getRecentItems(
   return items.map(toDashboardItem);
 }
 
+export async function getItemsByType(
+  userId: string,
+  typeName: string
+): Promise<DashboardItem[]> {
+  const items = await prisma.item.findMany({
+    where: {
+      userId,
+      itemType: { name: { equals: typeName, mode: "insensitive" } },
+    },
+    orderBy: { updatedAt: "desc" },
+    include: itemInclude,
+  });
+
+  return items.map(toDashboardItem);
+}
+
 export async function getItemStats(userId: string) {
   const [totalItems, favoriteItems] = await Promise.all([
     prisma.item.count({ where: { userId } }),
