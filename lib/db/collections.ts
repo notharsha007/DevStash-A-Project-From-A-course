@@ -1,4 +1,9 @@
 import { prisma } from "@/lib/prisma";
+import { 
+  COLLECTIONS_PER_PAGE, 
+  ITEMS_PER_PAGE, 
+  DASHBOARD_COLLECTIONS_LIMIT 
+} from "@/lib/constants";
 
 export interface DashboardCollection {
   id: string;
@@ -13,7 +18,7 @@ export interface DashboardCollection {
 
 export async function getRecentCollections(
   userId: string,
-  limit = 6
+  limit = DASHBOARD_COLLECTIONS_LIMIT
 ): Promise<DashboardCollection[]> {
   const collections = await prisma.collection.findMany({
     where: { userId },
@@ -149,12 +154,21 @@ export async function getUserCollections(
   });
 }
 
+export async function countAllCollections(userId: string): Promise<number> {
+  return prisma.collection.count({ where: { userId } });
+}
+
 export async function getAllCollections(
-  userId: string
+  userId: string,
+  page = 1,
+  limit = COLLECTIONS_PER_PAGE
 ): Promise<DashboardCollection[]> {
+  const skip = (Math.max(1, page) - 1) * limit;
   const collections = await prisma.collection.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
+    skip,
+    take: limit,
     include: {
       items: {
         include: {
@@ -231,16 +245,33 @@ export async function getCollectionById(
   };
 }
 
-export async function getItemsByCollection(
+export async function countItemsByCollection(
   userId: string,
   collectionId: string
+): Promise<number> {
+  return prisma.item.count({
+    where: {
+      userId,
+      collections: { some: { collectionId } },
+    },
+  });
+}
+
+export async function getItemsByCollection(
+  userId: string,
+  collectionId: string,
+  page = 1,
+  limit = ITEMS_PER_PAGE
 ) {
+  const skip = (Math.max(1, page) - 1) * limit;
   const items = await prisma.item.findMany({
     where: {
       userId,
       collections: { some: { collectionId } },
     },
     orderBy: { updatedAt: "desc" },
+    skip,
+    take: limit,
     include: {
       itemType: true,
       tags: { include: { tag: true } },

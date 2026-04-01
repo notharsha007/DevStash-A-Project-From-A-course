@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import { getItemsByType } from "@/lib/db/items";
+import { getItemsByType, countItemsByType } from "@/lib/db/items";
+import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
 import { ItemsPageHeader } from "@/components/items/ItemsPageHeader";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 
 type AllTypeName = "snippet" | "prompt" | "command" | "note" | "link" | "file" | "image";
 
@@ -20,26 +22,36 @@ const SLUG_TO_TYPE: Record<string, AllTypeName> = {
 
 interface Props {
   params: Promise<{ type: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ItemsTypePage({ params }: Props) {
+export default async function ItemsTypePage({ params, searchParams }: Props) {
   const { type } = await params;
   if (!VALID_SLUGS.includes(type)) notFound();
+
+  const resolvedSearchParams = await searchParams;
+  const page = Number(resolvedSearchParams.page) || 1;
 
   const session = await auth();
   const userId = session?.user?.id ?? "";
 
   const typeName = type.slice(0, -1).charAt(0).toUpperCase() + type.slice(1, -1);
-  const items = await getItemsByType(userId, typeName);
+  const [items, totalCount] = await Promise.all([
+    getItemsByType(userId, typeName, page, ITEMS_PER_PAGE),
+    countItemsByType(userId, typeName),
+  ]);
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
   const displayName = type.charAt(0).toUpperCase() + type.slice(1);
 
   return (
-    <main className="flex-1 overflow-y-auto p-6 space-y-6">
-      <ItemsPageHeader
-        title={displayName}
-        count={items.length}
-        createType={SLUG_TO_TYPE[type]}
-      />
+    <main className="flex-1 overflow-y-auto p-6 flex flex-col flex-nowrap min-h-full">
+      <div className="space-y-6 flex-1">
+        <ItemsPageHeader
+          title={displayName}
+          count={totalCount}
+          createType={SLUG_TO_TYPE[type]}
+        />
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
@@ -64,6 +76,13 @@ export default async function ItemsTypePage({ params }: Props) {
           containerClassName="grid gap-3 md:grid-cols-2 lg:grid-cols-3"
         />
       )}
+      </div>
+
+      <PaginationControls
+        currentPage={page}
+        totalPages={totalPages}
+        basePath={`/items/${type}`}
+      />
     </main>
   );
 }

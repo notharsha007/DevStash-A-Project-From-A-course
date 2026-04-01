@@ -1,5 +1,6 @@
 import { ContentType } from "../../generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
+import { ITEMS_PER_PAGE, DASHBOARD_RECENT_ITEMS_LIMIT } from "@/lib/constants";
 
 export interface ItemDetail {
   id: string;
@@ -124,7 +125,7 @@ const itemInclude = {
 
 export async function getPinnedItems(
   userId: string,
-  limit = 10
+  limit = DASHBOARD_RECENT_ITEMS_LIMIT
 ): Promise<DashboardItem[]> {
   const items = await prisma.item.findMany({
     where: { userId, isPinned: true },
@@ -138,7 +139,7 @@ export async function getPinnedItems(
 
 export async function getRecentItems(
   userId: string,
-  limit = 10
+  limit = DASHBOARD_RECENT_ITEMS_LIMIT
 ): Promise<DashboardItem[]> {
   const items = await prisma.item.findMany({
     where: { userId },
@@ -150,16 +151,33 @@ export async function getRecentItems(
   return items.map(toDashboardItem);
 }
 
-export async function getItemsByType(
+export async function countItemsByType(
   userId: string,
   typeName: string
+): Promise<number> {
+  return prisma.item.count({
+    where: {
+      userId,
+      itemType: { name: { equals: typeName, mode: "insensitive" } },
+    },
+  });
+}
+
+export async function getItemsByType(
+  userId: string,
+  typeName: string,
+  page = 1,
+  limit = ITEMS_PER_PAGE
 ): Promise<DashboardItem[]> {
+  const skip = (Math.max(1, page) - 1) * limit;
   const items = await prisma.item.findMany({
     where: {
       userId,
       itemType: { name: { equals: typeName, mode: "insensitive" } },
     },
     orderBy: { updatedAt: "desc" },
+    skip,
+    take: limit,
     include: itemInclude,
   });
 

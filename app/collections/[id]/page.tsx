@@ -1,22 +1,29 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import { getCollectionById, getItemsByCollection } from "@/lib/db/collections";
+import { getCollectionById, getItemsByCollection, countItemsByCollection } from "@/lib/db/collections";
+import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
 import { CollectionDetailHeader } from "@/components/collections/CollectionDetailHeader";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 
 interface Props {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function CollectionDetailPage({ params }: Props) {
+export default async function CollectionDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
+  
+  const resolvedSearchParams = await searchParams;
+  const page = Number(resolvedSearchParams.page) || 1;
 
   const session = await auth();
   const userId = session?.user?.id ?? "";
 
-  const [collection, items] = await Promise.all([
+  const [collection, totalCount, items] = await Promise.all([
     getCollectionById(userId, id),
-    getItemsByCollection(userId, id),
+    countItemsByCollection(userId, id),
+    getItemsByCollection(userId, id, page, ITEMS_PER_PAGE),
   ]);
 
   if (!collection) notFound();
@@ -32,11 +39,12 @@ export default async function CollectionDetailPage({ params }: Props) {
     (i) => i.typeName !== "image" && i.typeName !== "file"
   );
 
-  const totalCount = items.length;
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   return (
-    <main className="flex-1 overflow-y-auto p-6 space-y-6">
-      <CollectionDetailHeader collection={collection} itemCount={totalCount} />
+    <main className="flex-1 overflow-y-auto p-6 flex flex-col min-h-full">
+      <div className="space-y-6 flex-1">
+        <CollectionDetailHeader collection={collection} itemCount={totalCount} />
 
       {totalCount === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
@@ -79,6 +87,13 @@ export default async function CollectionDetailPage({ params }: Props) {
           )}
         </div>
       )}
+      </div>
+
+      <PaginationControls
+        currentPage={page}
+        totalPages={totalPages}
+        basePath={`/collections/${id}`}
+      />
     </main>
   );
 }
