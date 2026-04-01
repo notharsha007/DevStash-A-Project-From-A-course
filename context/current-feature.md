@@ -1,20 +1,16 @@
-# Current Feature: Pagination
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add pagination to `/items/[type]` and `/collections/[id]` pages
-- Implement pagination controls at the bottom with page numbers and Prev/Next links
-- Disable (grey out) Prev/Next links when not available
-- Use explicit skip/take database queries — do not fetch all resources at once
+<!-- Goals for the active feature will appear here -->
 
 ## Notes
 
-- **Constants to use**: `ITEMS_PER_PAGE = 21`, `COLLECTIONS_PER_PAGE = 21`
-- **Dashboard limits**: `DASHBOARD_COLLECTIONS_LIMIT = 6`, `DASHBOARD_RECENT_ITEMS_LIMIT = 10`
+<!-- Additional context or constraints will appear here -->
 
 ## History
 
@@ -56,3 +52,4 @@ In Progress
 - **2026-04-01** — Completed Collections Pages — `/collections` page with full grid of all user collections (`getAllCollections` DB query, `CollectionsSectionHeader` + `CollectionCard`); `/collections/[id]` page with mixed-type rendering (regular items in default grid, images in gallery section, files in file-list section); `getCollectionById` + `getItemsByCollection` DB queries; shared layout with auth guard + sidebar; `typeName` field added to `getItemsByCollection` for per-item type detection
 - **2026-04-01** — Completed Collection Management Actions — Edit/Delete/Favorite (icon only) buttons on `/collections/[id]` header (`CollectionDetailHeader` client component); 3-dots dropdown on collection cards (`/collections` grid + dashboard) with Edit, Delete, Favorite; `EditCollectionDialog` modal; AlertDialog delete confirmation (items not deleted, only join records); `updateCollection` + `deleteCollection` DB functions and server actions (auth-guarded, ownership-checked via updateMany/deleteMany); portal event bubbling fix via stopPropagation on DropdownMenuContent
 - **2026-04-01** — Completed Global Search / Command Palette — Cmd+K shortcut, client-side fuzzy search across items and collections, CommandDialog UI with cmdk, ItemDrawerContext for layout-level drawer opening, search data pre-fetched in all standard auth layouts
+- **2026-04-01** — Completed Pagination — Added skip/take DB queries, counting helpers, shared PaginationControls via shadcn, correctly tested page bounds, and refactored listings across items and collections
