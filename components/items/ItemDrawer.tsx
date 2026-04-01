@@ -18,6 +18,7 @@ import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2 } 
 import { toast } from "sonner";
 import { updateItem, deleteItem } from "@/actions/items";
 import { CodeEditor } from "@/components/items/CodeEditor";
+import { MarkdownEditor } from "@/components/items/MarkdownEditor";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -54,6 +55,7 @@ interface ItemDrawerProps {
 
 const TEXT_CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
 const LANGUAGE_TYPES = ["snippet", "command"];
+const MARKDOWN_TYPES = ["note", "prompt"];
 const URL_TYPES = ["link"];
 
 function formatDate(iso: string): string {
@@ -187,6 +189,8 @@ function ViewContent({
             </h3>
             {LANGUAGE_TYPES.includes(item.itemType.name.toLowerCase()) ? (
               <CodeEditor value={item.content} language={item.language} readonly />
+            ) : MARKDOWN_TYPES.includes(item.itemType.name.toLowerCase()) ? (
+              <MarkdownEditor value={item.content} readonly />
             ) : (
               <pre className="overflow-x-auto rounded-lg bg-muted text-sm leading-relaxed">
                 <code>
@@ -307,6 +311,7 @@ function EditContent({
   const typeName = item.itemType.name.toLowerCase();
   const showContent = TEXT_CONTENT_TYPES.includes(typeName);
   const showLanguage = LANGUAGE_TYPES.includes(typeName);
+  const showMarkdown = MARKDOWN_TYPES.includes(typeName);
   const showUrl = URL_TYPES.includes(typeName);
 
   const [saving, setSaving] = useState(false);
@@ -451,6 +456,11 @@ function EditContent({
               <CodeEditor
                 value={fields.content}
                 language={fields.language}
+                onChange={(val) => set("content", val)}
+              />
+            ) : showMarkdown ? (
+              <MarkdownEditor
+                value={fields.content}
                 onChange={(val) => set("content", val)}
               />
             ) : (

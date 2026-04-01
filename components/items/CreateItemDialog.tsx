@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createItem } from "@/actions/items";
 import { CodeEditor } from "@/components/items/CodeEditor";
+import { MarkdownEditor } from "@/components/items/MarkdownEditor";
 import type { CreateItemInput } from "@/actions/items";
 
 type FreeTypeName = "snippet" | "prompt" | "command" | "note" | "link";
@@ -31,6 +32,7 @@ const TYPES: { name: FreeTypeName; label: string; color: string }[] = [
 
 const TEXT_CONTENT_TYPES: FreeTypeName[] = ["snippet", "prompt", "command", "note"];
 const LANGUAGE_TYPES: FreeTypeName[] = ["snippet", "command"];
+const MARKDOWN_TYPES: FreeTypeName[] = ["note", "prompt"];
 
 interface CreateItemDialogProps {
   open: boolean;
@@ -64,6 +66,7 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
 
   const showContent = TEXT_CONTENT_TYPES.includes(selectedType);
   const showLanguage = LANGUAGE_TYPES.includes(selectedType);
+  const showMarkdown = MARKDOWN_TYPES.includes(selectedType);
   const showUrl = selectedType === "link";
 
   function set(key: keyof FormState, value: string) {
@@ -205,6 +208,11 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
                 <CodeEditor
                   value={fields.content}
                   language={fields.language}
+                  onChange={(val) => set("content", val)}
+                />
+              ) : showMarkdown ? (
+                <MarkdownEditor
+                  value={fields.content}
                   onChange={(val) => set("content", val)}
                 />
               ) : (
