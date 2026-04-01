@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateItem, deleteItem } from "@/actions/items";
+import { CodeEditor } from "@/components/items/CodeEditor";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -184,18 +185,22 @@ function ViewContent({
             <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Content
             </h3>
-            <pre className="overflow-x-auto rounded-lg bg-muted text-sm leading-relaxed">
-              <code>
-                {item.content.split("\n").map((line, i) => (
-                  <div key={i} className="flex px-2 py-[1px] hover:bg-foreground/5">
-                    <span className="w-8 shrink-0 select-none pr-3 text-right text-muted-foreground/40">
-                      {i + 1}
-                    </span>
-                    <span className="flex-1 whitespace-pre">{line}</span>
-                  </div>
-                ))}
-              </code>
-            </pre>
+            {LANGUAGE_TYPES.includes(item.itemType.name.toLowerCase()) ? (
+              <CodeEditor value={item.content} language={item.language} readonly />
+            ) : (
+              <pre className="overflow-x-auto rounded-lg bg-muted text-sm leading-relaxed">
+                <code>
+                  {item.content.split("\n").map((line, i) => (
+                    <div key={i} className="flex px-2 py-[1px] hover:bg-foreground/5">
+                      <span className="w-8 shrink-0 select-none pr-3 text-right text-muted-foreground/40">
+                        {i + 1}
+                      </span>
+                      <span className="flex-1 whitespace-pre">{line}</span>
+                    </div>
+                  ))}
+                </code>
+              </pre>
+            )}
           </section>
         )}
 
@@ -438,19 +443,26 @@ function EditContent({
         {showContent && (
           <div className="space-y-1.5">
             <Label
-              htmlFor="edit-content"
               className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
             >
               Content
             </Label>
-            <Textarea
-              id="edit-content"
-              value={fields.content}
-              onChange={(e) => set("content", e.target.value)}
-              placeholder="Item content"
-              rows={10}
-              className="resize-y font-mono"
-            />
+            {showLanguage ? (
+              <CodeEditor
+                value={fields.content}
+                language={fields.language}
+                onChange={(val) => set("content", val)}
+              />
+            ) : (
+              <Textarea
+                id="edit-content"
+                value={fields.content}
+                onChange={(e) => set("content", e.target.value)}
+                placeholder="Item content"
+                rows={10}
+                className="resize-y font-mono"
+              />
+            )}
           </div>
         )}
 

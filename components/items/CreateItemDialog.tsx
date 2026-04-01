@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createItem } from "@/actions/items";
+import { CodeEditor } from "@/components/items/CodeEditor";
 import type { CreateItemInput } from "@/actions/items";
 
 type FreeTypeName = "snippet" | "prompt" | "command" | "note" | "link";
@@ -34,6 +35,7 @@ const LANGUAGE_TYPES: FreeTypeName[] = ["snippet", "command"];
 interface CreateItemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialType?: FreeTypeName;
 }
 
 interface FormState {
@@ -54,9 +56,9 @@ const EMPTY_FORM: FormState = {
   tags: "",
 };
 
-export function CreateItemDialog({ open, onOpenChange }: CreateItemDialogProps) {
+export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItemDialogProps) {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<FreeTypeName>("snippet");
+  const [selectedType, setSelectedType] = useState<FreeTypeName>(initialType ?? "snippet");
   const [fields, setFields] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
@@ -75,7 +77,7 @@ export function CreateItemDialog({ open, onOpenChange }: CreateItemDialogProps) 
 
   function handleOpenChange(value: boolean) {
     if (!value) {
-      setSelectedType("snippet");
+      setSelectedType(initialType ?? "snippet");
       setFields(EMPTY_FORM);
     }
     onOpenChange(value);
@@ -196,20 +198,25 @@ export function CreateItemDialog({ open, onOpenChange }: CreateItemDialogProps) 
           {/* Content (text types only) */}
           {showContent && (
             <div className="space-y-1.5">
-              <Label
-                htmlFor="create-content"
-                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-              >
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Content
               </Label>
-              <Textarea
-                id="create-content"
-                value={fields.content}
-                onChange={(e) => set("content", e.target.value)}
-                placeholder="Item content"
-                rows={6}
-                className="resize-y font-mono"
-              />
+              {showLanguage ? (
+                <CodeEditor
+                  value={fields.content}
+                  language={fields.language}
+                  onChange={(val) => set("content", val)}
+                />
+              ) : (
+                <Textarea
+                  id="create-content"
+                  value={fields.content}
+                  onChange={(e) => set("content", e.target.value)}
+                  placeholder="Item content"
+                  rows={6}
+                  className="resize-y font-mono"
+                />
+              )}
             </div>
           )}
 

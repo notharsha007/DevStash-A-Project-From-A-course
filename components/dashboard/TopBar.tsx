@@ -23,12 +23,12 @@ export function TopBar() {
         <PanelLeft className="size-5" />
       </Button>
 
-      <div className="flex items-center gap-2">
+      <a href="/dashboard" className="flex items-center gap-2">
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
           <span className="text-sm font-bold text-primary-foreground">D</span>
         </div>
         <span className="text-lg font-semibold">DevStash</span>
-      </div>
+      </a>
 
       <div className="relative mx-auto w-full max-w-md">
         <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
