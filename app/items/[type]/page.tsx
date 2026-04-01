@@ -44,6 +44,12 @@ export default async function ItemsTypePage({ params }: Props) {
           <p className="text-lg font-medium">No {displayName.toLowerCase()} yet</p>
           <p className="mt-1 text-sm">Items you add will appear here.</p>
         </div>
+      ) : type === "images" ? (
+        <ItemsClientWrapper
+          items={items.map((item) => ({ ...item, updatedAt: item.updatedAt.toISOString() }))}
+          containerClassName="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          variant="gallery"
+        />
       ) : (
         <ItemsClientWrapper
           items={items.map((item) => ({ ...item, updatedAt: item.updatedAt.toISOString() }))}

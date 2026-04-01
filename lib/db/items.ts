@@ -74,6 +74,7 @@ export interface DashboardItem {
   isFavorite: boolean;
   typeIcon: string;
   typeColor: string;
+  fileUrl: string | null;
   updatedAt: Date;
 }
 
@@ -84,6 +85,7 @@ function toDashboardItem(
     description: string | null;
     isPinned: boolean;
     isFavorite: boolean;
+    fileUrl: string | null;
     updatedAt: Date;
     itemType: { icon: string; color: string };
     tags: { tag: { name: string } }[];
@@ -98,6 +100,7 @@ function toDashboardItem(
     isFavorite: item.isFavorite,
     typeIcon: item.itemType.icon,
     typeColor: item.itemType.color,
+    fileUrl: item.fileUrl,
     updatedAt: item.updatedAt,
   };
 }
