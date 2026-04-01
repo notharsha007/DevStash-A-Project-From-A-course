@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -16,9 +16,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createItem } from "@/actions/items";
+import { getUserCollections } from "@/actions/collections";
 import { CodeEditor } from "@/components/items/CodeEditor";
 import { MarkdownEditor } from "@/components/items/MarkdownEditor";
 import { FileUpload } from "@/components/items/FileUpload";
+import { CollectionsSelect } from "@/components/items/CollectionsSelect";
 import type { CreateItemInput } from "@/actions/items";
 import type { UploadResult } from "@/components/items/FileUpload";
 
@@ -69,6 +71,18 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
   const [fields, setFields] = useState<FormState>(EMPTY_FORM);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const [saving, setSaving] = useState(false);
+  const [collections, setCollections] = useState<{ id: string; name: string }[]>([]);
+  const [collectionsLoading, setCollectionsLoading] = useState(false);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!open) return;
+    setCollectionsLoading(true);
+    getUserCollections().then((result) => {
+      if (result.success) setCollections(result.data);
+      setCollectionsLoading(false);
+    });
+  }, [open]);
 
   const showContent = TEXT_CONTENT_TYPES.includes(selectedType);
   const showLanguage = LANGUAGE_TYPES.includes(selectedType);
@@ -91,6 +105,7 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
       setSelectedType(initialType ?? "snippet");
       setFields(EMPTY_FORM);
       setUploadResult(null);
+      setSelectedCollectionIds([]);
     }
     onOpenChange(value);
   }
@@ -112,6 +127,7 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
+      collectionIds: selectedCollectionIds,
     };
 
     const result = await createItem(input);
@@ -309,6 +325,19 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
               placeholder="react, hooks, typescript"
             />
             <p className="text-xs text-muted-foreground">Comma-separated</p>
+          </div>
+
+          {/* Collections */}
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Collections
+            </Label>
+            <CollectionsSelect
+              collections={collections}
+              selected={selectedCollectionIds}
+              onChange={setSelectedCollectionIds}
+              loading={collectionsLoading}
+            />
           </div>
         </div>
 

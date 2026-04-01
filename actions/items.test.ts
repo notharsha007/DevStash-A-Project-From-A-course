@@ -140,7 +140,7 @@ describe("deleteItem server action", () => {
 
   it("returns not found error when db returns false", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: "user-1" } } as never);
-    vi.mocked(dbDeleteItem).mockResolvedValue(false);
+    vi.mocked(dbDeleteItem).mockResolvedValue({ ok: false });
 
     const result = await deleteItem("item-1");
 
@@ -150,7 +150,7 @@ describe("deleteItem server action", () => {
 
   it("returns success when item is deleted", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: "user-1" } } as never);
-    vi.mocked(dbDeleteItem).mockResolvedValue(true);
+    vi.mocked(dbDeleteItem).mockResolvedValue({ ok: true, fileUrl: null });
 
     const result = await deleteItem("item-1");
 
@@ -159,7 +159,7 @@ describe("deleteItem server action", () => {
 
   it("passes userId from session to the db query", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: "user-42" } } as never);
-    vi.mocked(dbDeleteItem).mockResolvedValue(true);
+    vi.mocked(dbDeleteItem).mockResolvedValue({ ok: true, fileUrl: null });
 
     await deleteItem("item-99");
 

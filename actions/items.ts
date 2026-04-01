@@ -28,6 +28,7 @@ const CreateItemSchema = z.object({
   fileName: z.string().nullable().optional(),
   fileSize: z.number().int().positive().nullable().optional(),
   tags: z.array(z.string().trim().min(1)),
+  collectionIds: z.array(z.string()).optional().default([]),
 });
 
 export type CreateItemInput = z.input<typeof CreateItemSchema>;
@@ -75,6 +76,7 @@ const UpdateItemSchema = z.object({
     .or(z.literal("").transform(() => null)),
   language: z.string().nullable().optional(),
   tags: z.array(z.string().trim().min(1)),
+  collectionIds: z.array(z.string()).optional().default([]),
 });
 
 export type UpdateItemInput = z.input<typeof UpdateItemSchema>;

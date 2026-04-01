@@ -18,8 +18,10 @@ import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2, D
 import { buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
 import { updateItem, deleteItem } from "@/actions/items";
+import { getUserCollections } from "@/actions/collections";
 import { CodeEditor } from "@/components/items/CodeEditor";
 import { MarkdownEditor } from "@/components/items/MarkdownEditor";
+import { CollectionsSelect } from "@/components/items/CollectionsSelect";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -415,6 +417,18 @@ function EditContent({
     language: item.language ?? "",
     tags: item.tags.join(", "),
   });
+  const [allCollections, setAllCollections] = useState<{ id: string; name: string }[]>([]);
+  const [collectionsLoading, setCollectionsLoading] = useState(true);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
+    item.collections.map((c) => c.id)
+  );
+
+  useEffect(() => {
+    getUserCollections().then((result) => {
+      if (result.success) setAllCollections(result.data);
+      setCollectionsLoading(false);
+    });
+  }, []);
 
   function set(key: keyof EditState, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -432,6 +446,7 @@ function EditContent({
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
+      collectionIds: selectedCollectionIds,
     });
     setSaving(false);
 
@@ -622,25 +637,18 @@ function EditContent({
           <p className="text-xs text-muted-foreground">Comma-separated</p>
         </div>
 
-        {/* Non-editable: Collections */}
-        {item.collections.length > 0 && (
-          <div className="space-y-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Collections
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {item.collections.map((col) => (
-                <Badge
-                  key={col.id}
-                  variant="outline"
-                  className="rounded-full px-2.5 py-0.5 text-xs font-medium opacity-60"
-                >
-                  {col.name}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Collections */}
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Collections
+          </Label>
+          <CollectionsSelect
+            collections={allCollections}
+            selected={selectedCollectionIds}
+            onChange={setSelectedCollectionIds}
+            loading={collectionsLoading}
+          />
+        </div>
 
         {/* Non-editable: Dates */}
         <div className="space-y-1 border-t pt-4 text-sm">

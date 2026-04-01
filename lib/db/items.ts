@@ -173,6 +173,7 @@ export interface UpdateItemData {
   url?: string | null;
   language?: string | null;
   tags: string[];
+  collectionIds?: string[];
 }
 
 export async function updateItem(
@@ -202,6 +203,10 @@ export async function updateItem(
             },
           },
         })),
+      },
+      collections: {
+        deleteMany: {},
+        create: (data.collectionIds ?? []).map((collectionId) => ({ collectionId })),
       },
     },
     include: {
@@ -251,6 +256,7 @@ export interface CreateItemData {
   fileName?: string | null;
   fileSize?: number | null;
   tags: string[];
+  collectionIds?: string[];
 }
 
 export async function createItem(
@@ -294,6 +300,9 @@ export async function createItem(
           },
         })),
       },
+      collections: {
+        create: (data.collectionIds ?? []).map((collectionId) => ({ collectionId })),
+      },
     },
     include: {
       itemType: true,
@@ -324,7 +333,10 @@ export async function createItem(
       color: item.itemType.color,
     },
     tags: item.tags.map((t) => t.tag.name),
-    collections: [],
+    collections: item.collections.map((c) => ({
+      id: c.collection.id,
+      name: c.collection.name,
+    })),
   };
 }
 

@@ -139,6 +139,16 @@ export async function getCollectionStats(userId: string) {
   return { totalCollections, favoriteCollections };
 }
 
+export async function getUserCollections(
+  userId: string
+): Promise<{ id: string; name: string }[]> {
+  return prisma.collection.findMany({
+    where: { userId },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
+}
+
 export async function createCollection(
   userId: string,
   data: { name: string; description?: string | null }

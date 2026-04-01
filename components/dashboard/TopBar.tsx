@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 import { CreateItemDialog } from "@/components/items/CreateItemDialog";
+import { CreateCollectionDialog } from "@/components/collections/CreateCollectionDialog";
 
 export function TopBar() {
   const { toggleMobile } = useSidebar();
   const [createOpen, setCreateOpen] = useState(false);
+  const [collectionOpen, setCollectionOpen] = useState(false);
 
   return (
     <header className="flex h-14 items-center gap-4 border-b border-border px-4">
@@ -44,7 +46,7 @@ export function TopBar() {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button variant="outline" size="sm" />
+              <Button variant="outline" size="sm" onClick={() => setCollectionOpen(true)} />
             }
           >
             <FolderPlus className="size-4" />
@@ -66,6 +68,7 @@ export function TopBar() {
       </div>
 
       <CreateItemDialog open={createOpen} onOpenChange={setCreateOpen} />
+      <CreateCollectionDialog open={collectionOpen} onOpenChange={setCollectionOpen} />
     </header>
   );
 }
