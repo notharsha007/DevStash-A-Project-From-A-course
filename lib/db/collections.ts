@@ -281,3 +281,36 @@ export async function createCollection(
 
   return collection;
 }
+
+export async function updateCollection(
+  userId: string,
+  collectionId: string,
+  data: { name: string; description?: string | null }
+): Promise<{ id: string; name: string }> {
+  const collection = await prisma.collection.updateMany({
+    where: { id: collectionId, userId },
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+    },
+  });
+
+  if (collection.count === 0) {
+    throw new Error("Collection not found or unauthorized");
+  }
+
+  return { id: collectionId, name: data.name };
+}
+
+export async function deleteCollection(
+  userId: string,
+  collectionId: string
+): Promise<void> {
+  const result = await prisma.collection.deleteMany({
+    where: { id: collectionId, userId },
+  });
+
+  if (result.count === 0) {
+    throw new Error("Collection not found or unauthorized");
+  }
+}

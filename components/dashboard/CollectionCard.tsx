@@ -1,14 +1,38 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Star, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import {
-  Star,
-  MoreHorizontal,
-} from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from "@/components/ui/card";
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardAction,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { iconMap } from "@/lib/icon-map";
+import { EditCollectionDialog } from "@/components/collections/EditCollectionDialog";
+import { deleteCollection } from "@/actions/collections";
 
 interface CollectionCardProps {
   id: string;
@@ -29,14 +53,32 @@ export function CollectionCard({
   dominantTypeColor,
   itemTypeIcons,
 }: CollectionCardProps) {
+  const router = useRouter();
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    const result = await deleteCollection(id);
+    setDeleting(false);
+
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success("Collection deleted");
+    setDeleteOpen(false);
+    router.refresh();
+  }
+
   return (
-    <Link href={`/collections/${id}`} className="block">
+    <>
       <Card
-        className="transition-colors hover:ring-foreground/20"
-        style={{
-          borderLeftWidth: "3px",
-          borderLeftColor: dominantTypeColor,
-        }}
+        className="cursor-pointer transition-colors hover:ring-foreground/20"
+        style={{ borderLeftWidth: "3px", borderLeftColor: dominantTypeColor }}
+        onClick={() => router.push(`/collections/${id}`)}
       >
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -46,20 +88,37 @@ export function CollectionCard({
             )}
           </CardTitle>
           <CardAction>
-            <Tooltip>
-              <TooltipTrigger
+            <DropdownMenu>
+              <DropdownMenuTrigger
                 render={
                   <Button
                     variant="ghost"
                     size="icon-xs"
-                    onClick={(e) => e.preventDefault()}
+                    onClick={(e) => e.stopPropagation()}
                   />
                 }
               >
                 <MoreHorizontal className="size-4" />
-              </TooltipTrigger>
-              <TooltipContent>More options</TooltipContent>
-            </Tooltip>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                  <Pencil className="size-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled>
+                  <Star className="size-4" />
+                  Favorite
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => setDeleteOpen(true)}
+                >
+                  <Trash2 className="size-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CardAction>
           <CardDescription>{itemCount} items</CardDescription>
         </CardHeader>
@@ -78,6 +137,33 @@ export function CollectionCard({
           </div>
         </CardContent>
       </Card>
-    </Link>
+
+      <EditCollectionDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        collection={{ id, name, description }}
+      />
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete &ldquo;{name}&rdquo;?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will delete the collection. Items inside it will not be deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

@@ -5,6 +5,8 @@ import { auth } from "@/auth";
 import {
   createCollection as dbCreateCollection,
   getUserCollections as dbGetUserCollections,
+  updateCollection as dbUpdateCollection,
+  deleteCollection as dbDeleteCollection,
 } from "@/lib/db/collections";
 
 const CreateCollectionSchema = z.object({
@@ -46,4 +48,57 @@ export async function createCollection(
 
   const collection = await dbCreateCollection(session.user.id, parsed.data);
   return { success: true, data: collection };
+}
+
+const UpdateCollectionSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  description: z.string().nullable().optional(),
+});
+
+export type UpdateCollectionInput = z.input<typeof UpdateCollectionSchema>;
+
+type UpdateCollectionResult =
+  | { success: true; data: { id: string; name: string } }
+  | { success: false; error: string };
+
+export async function updateCollection(
+  collectionId: string,
+  input: UpdateCollectionInput
+): Promise<UpdateCollectionResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const parsed = UpdateCollectionSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Validation error" };
+  }
+
+  try {
+    const collection = await dbUpdateCollection(session.user.id, collectionId, parsed.data);
+    return { success: true, data: collection };
+  } catch {
+    return { success: false, error: "Collection not found" };
+  }
+}
+
+type DeleteCollectionResult =
+  | { success: true }
+  | { success: false; error: string };
+
+export async function deleteCollection(
+  collectionId: string
+): Promise<DeleteCollectionResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    await dbDeleteCollection(session.user.id, collectionId);
+    return { success: true };
+  } catch {
+    return { success: false, error: "Collection not found" };
+  }
 }
