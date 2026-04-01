@@ -1,33 +1,14 @@
-# Current Feature: Global Search / Command Palette
+# Current Feature
+
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Cmd+K (Mac) / Ctrl+K (Windows) opens the command palette from anywhere in the app
-- Fuzzy search across all user items and collections in real-time
-- Results grouped into two sections: Items and Collections
-- Keyboard navigation: arrow keys move selection, Enter navigates to selected result
-- Each item result shows its type icon (colored) and a content preview snippet
-- Each collection result shows its name and item count
-- Selecting an item opens it in the `ItemDrawer`
-- Selecting a collection navigates to `/collections/[id]`
-- TopBar search input opens the palette when clicked
-- TopBar search input placeholder shows `⌘K` hint
-- shadcn `cmdk` Command component used for the palette UI
-- All search data pre-fetched on app load (client-side fuzzy filter, no server round-trips per keystroke)
-
 ## Notes
-
-- Use `npx shadcn add command` to install the `cmdk` component — it is NOT yet in `components/ui/`
-- Search data shape: items need `{ id, title, typeName, typeIcon, typeColor, content }` (content truncated for preview); collections need `{ id, name, itemCount }`
-- Data pre-fetch should live in `dashboard/layout.tsx` (already fetches sidebar data) — pass search data down via a new server action or reuse existing DB fns
-- `ItemDrawer` is currently opened by `ItemsClientWrapper` via local state — for the palette (which lives in `TopBar` inside the layout), we need a way to trigger the drawer from outside; consider a React context or lifting drawer state into the layout
-- `proxy.ts` already protects `/search` — no changes needed there
-- Do NOT add a `/search` page — this is purely a palette/modal experience
-- Reuse existing `getItemTypesWithCounts` / `getRecentItems` patterns where possible; write a new lightweight `getSearchData(userId)` DB function
 
 ## History
 
@@ -68,3 +49,4 @@ In Progress
 - **2026-04-01** — Completed Add Item to Collections — `CollectionsSelect` pill-toggle multi-select component; `getUserCollections` DB query + server action; `collectionIds` added to `createItem`/`updateItem` DB functions, Zod schemas, and server actions; Collections field in `CreateItemDialog` (fetches on open) and `ItemDrawer` EditContent (fetches on edit, pre-populates from item); New Collection button in TopBar wired to `CreateCollectionDialog`; fixed pre-existing Zod `.issues` bug and `deleteItem` mock bug in tests
 - **2026-04-01** — Completed Collections Pages — `/collections` page with full grid of all user collections (`getAllCollections` DB query, `CollectionsSectionHeader` + `CollectionCard`); `/collections/[id]` page with mixed-type rendering (regular items in default grid, images in gallery section, files in file-list section); `getCollectionById` + `getItemsByCollection` DB queries; shared layout with auth guard + sidebar; `typeName` field added to `getItemsByCollection` for per-item type detection
 - **2026-04-01** — Completed Collection Management Actions — Edit/Delete/Favorite (icon only) buttons on `/collections/[id]` header (`CollectionDetailHeader` client component); 3-dots dropdown on collection cards (`/collections` grid + dashboard) with Edit, Delete, Favorite; `EditCollectionDialog` modal; AlertDialog delete confirmation (items not deleted, only join records); `updateCollection` + `deleteCollection` DB functions and server actions (auth-guarded, ownership-checked via updateMany/deleteMany); portal event bubbling fix via stopPropagation on DropdownMenuContent
+- **2026-04-01** — Completed Global Search / Command Palette — Cmd+K shortcut, client-side fuzzy search across items and collections, CommandDialog UI with cmdk, ItemDrawerContext for layout-level drawer opening, search data pre-fetched in all standard auth layouts
