@@ -1,14 +1,24 @@
-# Current Feature
-
-None — ready for next feature.
+# Current Feature: Collections Pages
 
 ## Status
 
-Idle
+In Progress
 
 ## Goals
 
+- Create `/collections` page listing all user collections as cards
+- Create `/collections/[id]` page showing items within a specific collection
+- Reuse existing collection cards and item cards (no new card designs)
+- Link "View all collections" in the sidebar to `/collections`
+- Link each collection card (dashboard + sidebar) to `/collections/[id]`
+
 ## Notes
+
+- Reuse `CollectionCard` from the dashboard for the `/collections` grid
+- Reuse `ItemCard` / `ItemRow` components for the `/collections/[id]` items list
+- The `/collections/[id]` page should display items similar to the `/items/[type]` page — with the drawer, create button, etc.
+- Auth-guard both pages (redirect to login if unauthenticated)
+- Both pages are server components fetching directly via Prisma
 
 ## History
 
