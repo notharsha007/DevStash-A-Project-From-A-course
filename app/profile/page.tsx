@@ -4,8 +4,6 @@ import { getProfileData } from "@/lib/db/profile";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChangePasswordDialog } from "@/components/profile/ChangePasswordDialog";
-import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
 import { iconMap } from "@/lib/icon-map";
 import { CalendarDays, Mail, User } from "lucide-react";
 
@@ -29,8 +27,6 @@ export default async function ProfilePage() {
   if (!profile) {
     redirect("/sign-in");
   }
-
-  const { hasPassword } = profile;
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
@@ -130,18 +126,6 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Account Actions */}
-        <Card className="lg:col-span-3">
-          <CardHeader>
-            <CardTitle className="text-base">Account Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap items-center gap-3">
-              {hasPassword && <ChangePasswordDialog />}
-              <DeleteAccountDialog />
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </main>
   );

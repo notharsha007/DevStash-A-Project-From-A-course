@@ -10,6 +10,7 @@ import {
   ChevronDown,
   LogOut,
   User,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -237,6 +238,12 @@ export function Sidebar({ itemTypes, collections, user }: SidebarProps) {
               >
                 <User className="size-4" />
                 Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => window.location.href = "/settings"}
+              >
+                <Settings className="size-4" />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
