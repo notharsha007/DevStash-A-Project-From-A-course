@@ -138,3 +138,19 @@ export async function getCollectionStats(userId: string) {
 
   return { totalCollections, favoriteCollections };
 }
+
+export async function createCollection(
+  userId: string,
+  data: { name: string; description?: string | null }
+): Promise<{ id: string; name: string }> {
+  const collection = await prisma.collection.create({
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+      userId,
+    },
+    select: { id: true, name: true },
+  });
+
+  return collection;
+}

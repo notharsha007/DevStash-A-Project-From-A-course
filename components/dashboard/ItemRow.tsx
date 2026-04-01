@@ -1,9 +1,14 @@
-import { Pin, Star } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Pin, Star, Copy, Check } from "lucide-react";
 import { iconMap } from "@/lib/icon-map";
 
 interface ItemRowProps {
   title: string;
   description: string | null;
+  content: string | null;
+  url: string | null;
   tags: string[];
   isPinned: boolean;
   isFavorite: boolean;
@@ -38,6 +43,8 @@ function formatDate(date: Date): string {
 export function ItemRow({
   title,
   description,
+  content,
+  url,
   isPinned,
   isFavorite,
   typeIcon,
@@ -45,10 +52,22 @@ export function ItemRow({
   updatedAt,
 }: ItemRowProps) {
   const Icon = iconMap[typeIcon] ?? iconMap.Code;
+  const [copied, setCopied] = useState(false);
+
+  const copyText = content ?? url;
+
+  function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!copyText) return;
+    navigator.clipboard.writeText(copyText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
 
   return (
     <div
-      className="flex items-center gap-4 rounded-xl border-l-[3px] bg-card px-4 py-4 ring-1 ring-foreground/10 transition-colors hover:ring-foreground/20"
+      className="group flex items-center gap-4 rounded-xl border-l-[3px] bg-card px-4 py-4 ring-1 ring-foreground/10 transition-colors hover:ring-foreground/20"
       style={{ borderLeftColor: typeColor }}
     >
       <div
@@ -73,9 +92,24 @@ export function ItemRow({
         )}
       </div>
 
-      <span className="shrink-0 text-sm text-muted-foreground">
-        {formatDate(updatedAt)}
-      </span>
+      <div className="flex shrink-0 items-center gap-3">
+        {copyText && (
+          <button
+            onClick={handleCopy}
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <Check className="size-4 text-green-500" />
+            ) : (
+              <Copy className="size-4" />
+            )}
+          </button>
+        )}
+        <span className="text-sm text-muted-foreground">
+          {formatDate(updatedAt)}
+        </span>
+      </div>
     </div>
   );
 }

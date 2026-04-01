@@ -1,14 +1,13 @@
-import Link from "next/link";
 import { Clock, Pin } from "lucide-react";
 import { getRecentCollections, getCollectionStats } from "@/lib/db/collections";
 import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items";
 import { prisma } from "@/lib/prisma";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
+import { CollectionsSectionHeader } from "@/components/collections/CollectionsSectionHeader";
 import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
 
 export default async function DashboardPage() {
-  // TODO: replace with authenticated user once auth is set up
   const user = await prisma.user.findUnique({
     where: { email: "demo@devstash.io" },
   });
@@ -43,15 +42,7 @@ export default async function DashboardPage() {
 
       {/* Collections */}
       <section className="mt-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Collections</h2>
-          <Link
-            href="/collections"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            View all
-          </Link>
-        </div>
+        <CollectionsSectionHeader />
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recentCollections.map((col) => (
             <CollectionCard

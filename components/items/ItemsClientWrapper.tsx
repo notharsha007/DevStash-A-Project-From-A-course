@@ -11,6 +11,8 @@ export interface ClientItem {
   id: string;
   title: string;
   description: string | null;
+  content: string | null;
+  url: string | null;
   tags: string[];
   isPinned: boolean;
   isFavorite: boolean;
@@ -60,14 +62,19 @@ export function ItemsClientWrapper({
               onClick={() => handleItemClick(item.id)}
             />
           ) : (
-            <button
+            <div
               key={item.id}
               onClick={() => handleItemClick(item.id)}
-              className="w-full text-left"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && handleItemClick(item.id)}
+              className="w-full cursor-pointer"
             >
               <ItemRow
                 title={item.title}
                 description={item.description}
+                content={item.content}
+                url={item.url}
                 tags={item.tags}
                 isPinned={item.isPinned}
                 isFavorite={item.isFavorite}
@@ -75,7 +82,7 @@ export function ItemsClientWrapper({
                 typeColor={item.typeColor}
                 updatedAt={new Date(item.updatedAt)}
               />
-            </button>
+            </div>
           )
         )}
       </div>
