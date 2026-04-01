@@ -5,12 +5,12 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreateItemDialog } from "@/components/items/CreateItemDialog";
 
-type FreeTypeName = "snippet" | "prompt" | "command" | "note" | "link";
+type AllTypeName = "snippet" | "prompt" | "command" | "note" | "link" | "file" | "image";
 
 interface ItemsPageHeaderProps {
   title: string;
   count: number;
-  createType?: FreeTypeName;
+  createType?: AllTypeName;
 }
 
 export function ItemsPageHeader({ title, count, createType }: ItemsPageHeaderProps) {

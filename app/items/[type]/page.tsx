@@ -4,15 +4,17 @@ import { getItemsByType } from "@/lib/db/items";
 import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
 import { ItemsPageHeader } from "@/components/items/ItemsPageHeader";
 
-type FreeTypeName = "snippet" | "prompt" | "command" | "note" | "link";
+type AllTypeName = "snippet" | "prompt" | "command" | "note" | "link" | "file" | "image";
 
 const VALID_SLUGS = ["snippets", "prompts", "commands", "notes", "files", "images", "links"];
 
-const FREE_TYPES: Record<string, FreeTypeName> = {
+const SLUG_TO_TYPE: Record<string, AllTypeName> = {
   snippets: "snippet",
   prompts: "prompt",
   commands: "command",
   notes: "note",
+  files: "file",
+  images: "image",
   links: "link",
 };
 
@@ -36,7 +38,7 @@ export default async function ItemsTypePage({ params }: Props) {
       <ItemsPageHeader
         title={displayName}
         count={items.length}
-        createType={FREE_TYPES[type]}
+        createType={SLUG_TO_TYPE[type]}
       />
 
       {items.length === 0 ? (
@@ -49,6 +51,12 @@ export default async function ItemsTypePage({ params }: Props) {
           items={items.map((item) => ({ ...item, updatedAt: item.updatedAt.toISOString() }))}
           containerClassName="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           variant="gallery"
+        />
+      ) : type === "files" ? (
+        <ItemsClientWrapper
+          items={items.map((item) => ({ ...item, updatedAt: item.updatedAt.toISOString() }))}
+          containerClassName="flex flex-col gap-1"
+          variant="file-list"
         />
       ) : (
         <ItemsClientWrapper

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ItemRow } from "@/components/dashboard/ItemRow";
 import { ItemDrawer } from "@/components/items/ItemDrawer";
 import { ImageThumbnailCard } from "@/components/items/ImageThumbnailCard";
+import { FileListRow } from "@/components/items/FileListRow";
 
 // updatedAt is serialized to string when passed from server → client component
 export interface ClientItem {
@@ -16,13 +17,15 @@ export interface ClientItem {
   typeIcon: string;
   typeColor: string;
   fileUrl: string | null;
+  fileName: string | null;
+  fileSize: number | null;
   updatedAt: string;
 }
 
 interface ItemsClientWrapperProps {
   items: ClientItem[];
   containerClassName?: string;
-  variant?: "default" | "gallery";
+  variant?: "default" | "gallery" | "file-list";
 }
 
 export function ItemsClientWrapper({
@@ -46,6 +49,16 @@ export function ItemsClientWrapper({
             <div key={item.id} onClick={() => handleItemClick(item.id)}>
               <ImageThumbnailCard title={item.title} fileUrl={item.fileUrl} />
             </div>
+          ) : variant === "file-list" ? (
+            <FileListRow
+              key={item.id}
+              title={item.title}
+              fileName={item.fileName}
+              fileSize={item.fileSize}
+              fileUrl={item.fileUrl}
+              updatedAt={new Date(item.updatedAt)}
+              onClick={() => handleItemClick(item.id)}
+            />
           ) : (
             <button
               key={item.id}

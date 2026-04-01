@@ -75,6 +75,8 @@ export interface DashboardItem {
   typeIcon: string;
   typeColor: string;
   fileUrl: string | null;
+  fileName: string | null;
+  fileSize: number | null;
   updatedAt: Date;
 }
 
@@ -86,6 +88,8 @@ function toDashboardItem(
     isPinned: boolean;
     isFavorite: boolean;
     fileUrl: string | null;
+    fileName: string | null;
+    fileSize: number | null;
     updatedAt: Date;
     itemType: { icon: string; color: string };
     tags: { tag: { name: string } }[];
@@ -101,6 +105,8 @@ function toDashboardItem(
     typeIcon: item.itemType.icon,
     typeColor: item.itemType.color,
     fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     updatedAt: item.updatedAt,
   };
 }
