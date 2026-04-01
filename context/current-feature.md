@@ -1,22 +1,16 @@
-# Current Feature: Editor Preferences Settings
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add font size, tab size, word wrap, minimap, and theme controls to the Settings page.
-- Persist settings to a JSON column `editorPreferences` on the `User` model via Prisma migration.
-- Create a server action to update these preferences in the database.
-- Build an `EditorPreferencesContext` for client components to consume settings.
-- Apply the user's settings automatically to the Monaco Editor component.
-- Implement an auto-save behavior for all settings toggles (no save button) with a success toast.
+<!-- Goals for the active feature will appear here -->
 
 ## Notes
 
-- Migration requires DB changes, never use `db push`. Use `npx prisma migrate dev`.
-- Ensure Monaco picks up dynamic changes (e.g. `vs-dark` to `monokai`).
+<!-- Additional context or constraints will appear here -->
 
 ## History
 
@@ -60,3 +54,4 @@ In Progress
 - **2026-04-01** — Completed Global Search / Command Palette — Cmd+K shortcut, client-side fuzzy search across items and collections, CommandDialog UI with cmdk, ItemDrawerContext for layout-level drawer opening, search data pre-fetched in all standard auth layouts
 - **2026-04-01** — Completed Pagination — Added skip/take DB queries, counting helpers, shared PaginationControls via shadcn, correctly tested page bounds, and refactored listings across items and collections
 - **2026-04-01** — Completed Settings Page — Extracted account deletion and password resets into an isolated protected route, and synced the sidebar user navigation menu
+- **2026-04-01** — Completed Editor Preferences Settings — `editorPreferences` JSON column in `User`, `EditorPreferencesContext` globally caching and distributing theme, font size, minimap and wordwrap config dynamically to the Monaco editor; unified settings page logic
