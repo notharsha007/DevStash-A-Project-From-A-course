@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2 } from "lucide-react";
+import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2, Download, FileIcon } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
 import { updateItem, deleteItem } from "@/actions/items";
 import { CodeEditor } from "@/components/items/CodeEditor";
@@ -38,6 +39,8 @@ interface ItemDetailResponse {
   language: string | null;
   url: string | null;
   fileName: string | null;
+  fileUrl: string | null;
+  fileSize: number | null;
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: string;
@@ -57,6 +60,22 @@ const TEXT_CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
 const LANGUAGE_TYPES = ["snippet", "command"];
 const MARKDOWN_TYPES = ["note", "prompt"];
 const URL_TYPES = ["link"];
+const IMAGE_TYPES = ["image"];
+const FILE_TYPES = ["file"];
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function r2KeyFromUrl(fileUrl: string): string | null {
+  try {
+    return new URL(fileUrl).pathname.slice(1);
+  } catch {
+    return null;
+  }
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -149,10 +168,32 @@ function ViewContent({
           <Pin className="size-4" />
           Pin
         </Button>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-sm">
-          <Copy className="size-4" />
-          Copy
-        </Button>
+        {!IMAGE_TYPES.includes(item.itemType.name.toLowerCase()) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 text-sm"
+            onClick={() => {
+              if (item.content) {
+                navigator.clipboard.writeText(item.content);
+                toast.success("Copied to clipboard");
+              }
+            }}
+          >
+            <Copy className="size-4" />
+            Copy
+          </Button>
+        )}
+        {IMAGE_TYPES.includes(item.itemType.name.toLowerCase()) && item.fileUrl && r2KeyFromUrl(item.fileUrl) && (
+          <a
+            href={`/api/download/${r2KeyFromUrl(item.fileUrl)}`}
+            download
+            className={buttonVariants({ variant: "ghost", size: "sm", className: "gap-1.5 text-sm" })}
+          >
+            <Download className="size-4" />
+            Download
+          </a>
+        )}
         <Button variant="ghost" size="sm" className="gap-1.5 text-sm" onClick={onEdit}>
           <Pencil className="size-4" />
           Edit
@@ -222,6 +263,57 @@ function ViewContent({
             >
               {item.url}
             </a>
+          </section>
+        )}
+
+        {/* Image preview */}
+        {IMAGE_TYPES.includes(item.itemType.name.toLowerCase()) && item.fileUrl && (
+          <section>
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Image
+            </h3>
+            <div className="overflow-hidden rounded-lg border border-border">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.fileUrl}
+                alt={item.fileName ?? item.title}
+                className="w-full object-contain"
+                style={{ maxHeight: "400px" }}
+              />
+            </div>
+            {item.fileName && (
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {item.fileName}
+                {item.fileSize ? ` · ${formatBytes(item.fileSize)}` : ""}
+              </p>
+            )}
+          </section>
+        )}
+
+        {/* File info + download */}
+        {FILE_TYPES.includes(item.itemType.name.toLowerCase()) && item.fileUrl && (
+          <section>
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              File
+            </h3>
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
+              <FileIcon className="size-5 shrink-0 text-muted-foreground" />
+              <div className="flex-1 min-w-0">
+                <p className="truncate text-sm font-medium">{item.fileName ?? "file"}</p>
+                {item.fileSize && (
+                  <p className="text-xs text-muted-foreground">{formatBytes(item.fileSize)}</p>
+                )}
+              </div>
+              {r2KeyFromUrl(item.fileUrl!) && (
+                <a
+                  href={`/api/download/${r2KeyFromUrl(item.fileUrl!)}`}
+                  download
+                  className={buttonVariants({ variant: "ghost", size: "icon-sm" })}
+                >
+                  <Download className="size-4" />
+                </a>
+              )}
+            </div>
           </section>
         )}
 

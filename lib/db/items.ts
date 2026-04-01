@@ -11,6 +11,7 @@ export interface ItemDetail {
   url: string | null;
   fileName: string | null;
   fileUrl: string | null;
+  fileSize: number | null;
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
@@ -45,6 +46,7 @@ export async function getItemDetail(
     url: item.url,
     fileName: item.fileName,
     fileUrl: item.fileUrl,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -204,6 +206,7 @@ export async function updateItem(
     url: item.url,
     fileName: item.fileName,
     fileUrl: item.fileUrl,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -229,6 +232,9 @@ export interface CreateItemData {
   content?: string | null;
   url?: string | null;
   language?: string | null;
+  fileUrl?: string | null;
+  fileName?: string | null;
+  fileSize?: number | null;
   tags: string[];
 }
 
@@ -242,7 +248,13 @@ export async function createItem(
 
   if (!itemType) return null;
 
-  const contentType = itemType.name.toLowerCase() === "link" ? ContentType.URL : ContentType.TEXT;
+  const typeLower = itemType.name.toLowerCase();
+  const contentType =
+    typeLower === "link"
+      ? ContentType.URL
+      : typeLower === "file" || typeLower === "image"
+      ? ContentType.FILE
+      : ContentType.TEXT;
 
   const item = await prisma.item.create({
     data: {
@@ -251,6 +263,9 @@ export async function createItem(
       content: data.content ?? null,
       url: data.url ?? null,
       language: data.language ?? null,
+      fileUrl: data.fileUrl ?? null,
+      fileName: data.fileName ?? null,
+      fileSize: data.fileSize ?? null,
       contentType,
       userId,
       itemTypeId: itemType.id,
@@ -282,6 +297,7 @@ export async function createItem(
     url: item.url,
     fileName: item.fileName,
     fileUrl: item.fileUrl,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -300,12 +316,12 @@ export async function createItem(
 export async function deleteItem(
   userId: string,
   itemId: string
-): Promise<boolean> {
+): Promise<{ ok: true; fileUrl: string | null } | { ok: false }> {
   const existing = await prisma.item.findFirst({ where: { id: itemId, userId } });
-  if (!existing) return false;
+  if (!existing) return { ok: false };
 
   await prisma.item.delete({ where: { id: itemId } });
-  return true;
+  return { ok: true, fileUrl: existing.fileUrl };
 }
 
 export async function getItemStats(userId: string) {

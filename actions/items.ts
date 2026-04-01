@@ -8,11 +8,12 @@ import {
   deleteItem as dbDeleteItem,
 } from "@/lib/db/items";
 import type { ItemDetail } from "@/lib/db/items";
+import { deleteFromR2 } from "@/lib/r2";
 
-const FREE_TYPE_NAMES = ["snippet", "prompt", "command", "note", "link"] as const;
+const ALL_TYPE_NAMES = ["snippet", "prompt", "command", "note", "link", "file", "image"] as const;
 
 const CreateItemSchema = z.object({
-  typeName: z.enum(FREE_TYPE_NAMES),
+  typeName: z.enum(ALL_TYPE_NAMES),
   title: z.string().trim().min(1, "Title is required"),
   description: z.string().nullable().optional(),
   content: z.string().nullable().optional(),
@@ -23,6 +24,9 @@ const CreateItemSchema = z.object({
     .optional()
     .or(z.literal("").transform(() => null)),
   language: z.string().nullable().optional(),
+  fileUrl: z.string().url().nullable().optional(),
+  fileName: z.string().nullable().optional(),
+  fileSize: z.number().int().positive().nullable().optional(),
   tags: z.array(z.string().trim().min(1)),
 });
 
@@ -41,6 +45,14 @@ export async function createItem(input: CreateItemInput): Promise<CreateResult> 
   const parsed = CreateItemSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false, error: parsed.error.format() };
+  }
+
+  const { typeName } = parsed.data;
+  if (
+    (typeName === "file" || typeName === "image") &&
+    !parsed.data.fileUrl
+  ) {
+    return { success: false, error: "A file must be uploaded for this type" };
   }
 
   const item = await dbCreateItem(session.user.id, parsed.data);
@@ -101,9 +113,17 @@ export async function deleteItem(itemId: string): Promise<DeleteResult> {
     return { success: false, error: "Unauthorized" };
   }
 
-  const deleted = await dbDeleteItem(session.user.id, itemId);
-  if (!deleted) {
+  const result = await dbDeleteItem(session.user.id, itemId);
+  if (!result.ok) {
     return { success: false, error: "Item not found" };
+  }
+
+  if (result.fileUrl) {
+    try {
+      await deleteFromR2(result.fileUrl);
+    } catch {
+      // R2 deletion failure is non-fatal — item is already removed from DB
+    }
   }
 
   return { success: true };

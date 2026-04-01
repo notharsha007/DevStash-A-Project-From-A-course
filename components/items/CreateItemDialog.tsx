@@ -18,26 +18,31 @@ import { Textarea } from "@/components/ui/textarea";
 import { createItem } from "@/actions/items";
 import { CodeEditor } from "@/components/items/CodeEditor";
 import { MarkdownEditor } from "@/components/items/MarkdownEditor";
+import { FileUpload } from "@/components/items/FileUpload";
 import type { CreateItemInput } from "@/actions/items";
+import type { UploadResult } from "@/components/items/FileUpload";
 
-type FreeTypeName = "snippet" | "prompt" | "command" | "note" | "link";
+type AllTypeName = "snippet" | "prompt" | "command" | "note" | "link" | "file" | "image";
 
-const TYPES: { name: FreeTypeName; label: string; color: string }[] = [
+const TYPES: { name: AllTypeName; label: string; color: string }[] = [
   { name: "snippet", label: "Snippet", color: "#3b82f6" },
   { name: "prompt", label: "Prompt", color: "#8b5cf6" },
   { name: "command", label: "Command", color: "#f97316" },
   { name: "note", label: "Note", color: "#fde047" },
   { name: "link", label: "Link", color: "#10b981" },
+  { name: "file", label: "File", color: "#6b7280" },
+  { name: "image", label: "Image", color: "#ec4899" },
 ];
 
-const TEXT_CONTENT_TYPES: FreeTypeName[] = ["snippet", "prompt", "command", "note"];
-const LANGUAGE_TYPES: FreeTypeName[] = ["snippet", "command"];
-const MARKDOWN_TYPES: FreeTypeName[] = ["note", "prompt"];
+const TEXT_CONTENT_TYPES: AllTypeName[] = ["snippet", "prompt", "command", "note"];
+const LANGUAGE_TYPES: AllTypeName[] = ["snippet", "command"];
+const MARKDOWN_TYPES: AllTypeName[] = ["note", "prompt"];
+const FILE_TYPES: AllTypeName[] = ["file", "image"];
 
 interface CreateItemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initialType?: FreeTypeName;
+  initialType?: AllTypeName;
 }
 
 interface FormState {
@@ -60,28 +65,32 @@ const EMPTY_FORM: FormState = {
 
 export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItemDialogProps) {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<FreeTypeName>(initialType ?? "snippet");
+  const [selectedType, setSelectedType] = useState<AllTypeName>(initialType ?? "snippet");
   const [fields, setFields] = useState<FormState>(EMPTY_FORM);
+  const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const [saving, setSaving] = useState(false);
 
   const showContent = TEXT_CONTENT_TYPES.includes(selectedType);
   const showLanguage = LANGUAGE_TYPES.includes(selectedType);
   const showMarkdown = MARKDOWN_TYPES.includes(selectedType);
   const showUrl = selectedType === "link";
+  const showFile = FILE_TYPES.includes(selectedType);
 
   function set(key: keyof FormState, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleTypeChange(type: FreeTypeName) {
+  function handleTypeChange(type: AllTypeName) {
     setSelectedType(type);
     setFields((prev) => ({ ...prev, content: "", url: "", language: "" }));
+    setUploadResult(null);
   }
 
   function handleOpenChange(value: boolean) {
     if (!value) {
       setSelectedType(initialType ?? "snippet");
       setFields(EMPTY_FORM);
+      setUploadResult(null);
     }
     onOpenChange(value);
   }
@@ -96,6 +105,9 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
       content: showContent ? fields.content || null : null,
       url: showUrl ? fields.url || null : null,
       language: showLanguage ? fields.language || null : null,
+      fileUrl: showFile ? (uploadResult?.fileUrl ?? null) : null,
+      fileName: showFile ? (uploadResult?.fileName ?? null) : null,
+      fileSize: showFile ? (uploadResult?.fileSize ?? null) : null,
       tags: fields.tags
         .split(",")
         .map((t) => t.trim())
@@ -119,7 +131,10 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
     router.refresh();
   }
 
-  const isValid = fields.title.trim() !== "" && (!showUrl || fields.url.trim() !== "");
+  const isValid =
+    fields.title.trim() !== "" &&
+    (!showUrl || fields.url.trim() !== "") &&
+    (!showFile || uploadResult !== null);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -197,6 +212,20 @@ export function CreateItemDialog({ open, onOpenChange, initialType }: CreateItem
               rows={2}
             />
           </div>
+
+          {/* File upload (file/image types) */}
+          {showFile && (
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {selectedType === "image" ? "Image" : "File"}{" "}
+                <span className="text-destructive">*</span>
+              </Label>
+              <FileUpload
+                itemType={selectedType as "file" | "image"}
+                onUpload={setUploadResult}
+              />
+            </div>
+          )}
 
           {/* Content (text types only) */}
           {showContent && (
