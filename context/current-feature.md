@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: Editor Preferences Settings
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals for the active feature will appear here -->
+- Add font size, tab size, word wrap, minimap, and theme controls to the Settings page.
+- Persist settings to a JSON column `editorPreferences` on the `User` model via Prisma migration.
+- Create a server action to update these preferences in the database.
+- Build an `EditorPreferencesContext` for client components to consume settings.
+- Apply the user's settings automatically to the Monaco Editor component.
+- Implement an auto-save behavior for all settings toggles (no save button) with a success toast.
 
 ## Notes
 
-<!-- Additional context or constraints will appear here -->
+- Migration requires DB changes, never use `db push`. Use `npx prisma migrate dev`.
+- Ensure Monaco picks up dynamic changes (e.g. `vs-dark` to `monokai`).
 
 ## History
 

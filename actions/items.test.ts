@@ -23,6 +23,7 @@ const mockItemDetail = {
   url: null,
   fileName: null,
   fileUrl: null,
+  fileSize: null,
   isFavorite: false,
   isPinned: false,
   createdAt: new Date("2026-01-15"),
@@ -38,12 +39,12 @@ describe("updateItem server action", () => {
   });
 
   it("returns unauthorized error when there is no session", async () => {
-    vi.mocked(auth).mockResolvedValue(null);
+    vi.mocked(auth).mockResolvedValue(null as any);
 
     const result = await updateItem("item-1", { title: "Test", tags: [] });
 
     expect(result.success).toBe(false);
-    expect(result.error).toBe("Unauthorized");
+    if (!result.success) expect(result.error).toBe("Unauthorized");
     expect(dbUpdateItem).not.toHaveBeenCalled();
   });
 
@@ -76,7 +77,7 @@ describe("updateItem server action", () => {
     const result = await updateItem("item-1", { title: "Test", tags: [] });
 
     expect(result.success).toBe(false);
-    expect(result.error).toBe("Item not found");
+    if (!result.success) expect(result.error).toBe("Item not found");
   });
 
   it("returns success with updated item on valid input", async () => {
@@ -129,7 +130,7 @@ describe("deleteItem server action", () => {
   });
 
   it("returns unauthorized error when there is no session", async () => {
-    vi.mocked(auth).mockResolvedValue(null);
+    vi.mocked(auth).mockResolvedValue(null as any);
 
     const result = await deleteItem("item-1");
 

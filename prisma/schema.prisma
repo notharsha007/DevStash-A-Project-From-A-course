@@ -14,8 +14,9 @@ model User {
   name           String?
   email          String    @unique
   emailVerified  DateTime?
-  image          String?
-  hashedPassword String?
+  image             String?
+  hashedPassword    String?
+  editorPreferences Json?
 
   // Subscription
   isPro                Boolean @default(false)

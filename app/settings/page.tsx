@@ -4,6 +4,7 @@ import { getProfileData } from "@/lib/db/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChangePasswordDialog } from "@/components/profile/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
+import { EditorPreferencesCard } from "@/components/settings/EditorPreferencesCard";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -26,6 +27,9 @@ export default async function SettingsPage() {
       <p className="mt-1 text-muted-foreground">Manage your account preferences and security.</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
+        {/* Editor Settings */}
+        <EditorPreferencesCard />
+
         {/* Account Actions */}
         <Card className="lg:col-span-3">
           <CardHeader>

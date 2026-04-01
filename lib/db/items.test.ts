@@ -116,7 +116,7 @@ describe("getItemDetail", () => {
       ...mockPrismaItem,
       tags: [],
       collections: [],
-    });
+    } as any);
 
     const result = await getItemDetail("user-1", "item-1");
 
@@ -153,13 +153,13 @@ describe("updateItem", () => {
   });
 
   it("calls prisma.item.update with tag disconnect-all and connect-or-create", async () => {
-    vi.mocked(prisma.item.findFirst).mockResolvedValue({ id: "item-1" } as never);
+    vi.mocked(prisma.item.findFirst).mockResolvedValue({ id: "item-1" } as any);
     vi.mocked(prisma.item.update).mockResolvedValue({
       ...mockPrismaItem,
       title: "Updated Title",
       tags: [],
       collections: [],
-    });
+    } as any);
 
     await updateItem("user-1", "item-1", {
       title: "Updated Title",
@@ -184,14 +184,14 @@ describe("updateItem", () => {
   });
 
   it("returns updated ItemDetail with flattened tags and collections", async () => {
-    vi.mocked(prisma.item.findFirst).mockResolvedValue({ id: "item-1" } as never);
+    vi.mocked(prisma.item.findFirst).mockResolvedValue({ id: "item-1" } as any);
     vi.mocked(prisma.item.update).mockResolvedValue({
       ...mockPrismaItem,
       title: "New Title",
       description: "New desc",
       tags: [{ itemId: "item-1", tagId: "tag-3", tag: { id: "tag-3", name: "typescript" } }],
       collections: [],
-    });
+    } as any);
 
     const result = await updateItem("user-1", "item-1", {
       title: "New Title",

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import { useEditorPreferences } from "@/components/settings/EditorPreferencesContext";
 
 interface CodeEditorProps {
   value: string;
@@ -14,6 +15,7 @@ interface CodeEditorProps {
 
 export function CodeEditor({ value, language, readonly = false, onChange }: CodeEditorProps) {
   const monacoLanguage = normalizeLanguage(language);
+  const { preferences } = useEditorPreferences();
 
   function handleCopy() {
     navigator.clipboard.writeText(value).then(() => toast.success("Copied to clipboard"));
@@ -50,12 +52,13 @@ export function CodeEditor({ value, language, readonly = false, onChange }: Code
       <Editor
         value={value}
         language={monacoLanguage ?? "plaintext"}
-        theme="vs-dark"
+        theme={preferences.theme}
         options={{
           readOnly: readonly,
-          minimap: { enabled: false },
+          minimap: { enabled: preferences.minimap },
           scrollBeyondLastLine: false,
-          fontSize: 13,
+          fontSize: preferences.fontSize,
+          tabSize: preferences.tabSize,
           lineHeight: 20,
           padding: { top: 12, bottom: 12 },
           overviewRulerLanes: 0,
@@ -67,7 +70,7 @@ export function CodeEditor({ value, language, readonly = false, onChange }: Code
             verticalScrollbarSize: 6,
             horizontalScrollbarSize: 6,
           },
-          wordWrap: "off",
+          wordWrap: preferences.wordWrap,
           automaticLayout: true,
           contextmenu: false,
           folding: false,

@@ -8,6 +8,8 @@ import { getItemTypesWithCounts, getSearchItems } from "@/lib/db/items";
 import { getSidebarCollections, getSearchCollections } from "@/lib/db/collections";
 import { ItemDrawerProvider } from "@/components/items/ItemDrawerContext";
 import { ItemDrawerHost } from "@/components/items/ItemDrawerHost";
+import { getEditorPreferences } from "@/lib/db/settings";
+import { EditorPreferencesProvider } from "@/components/settings/EditorPreferencesContext";
 
 export default async function SettingsLayout({
   children,
@@ -25,11 +27,12 @@ export default async function SettingsLayout({
     redirect("/sign-in");
   }
 
-  const [itemTypes, sidebarCollections, searchItems, searchCollections] = await Promise.all([
+  const [itemTypes, sidebarCollections, searchItems, searchCollections, editorPreferences] = await Promise.all([
     getItemTypesWithCounts(userId),
     getSidebarCollections(userId),
     getSearchItems(userId),
     getSearchCollections(userId),
+    getEditorPreferences(userId),
   ]);
 
   const userData = {
@@ -39,7 +42,8 @@ export default async function SettingsLayout({
   };
 
   return (
-    <ItemDrawerProvider>
+    <EditorPreferencesProvider initialPreferences={editorPreferences}>
+      <ItemDrawerProvider>
       <SidebarProvider>
         <TooltipProvider>
           <div className="flex h-screen flex-col">
@@ -57,5 +61,6 @@ export default async function SettingsLayout({
         </TooltipProvider>
       </SidebarProvider>
     </ItemDrawerProvider>
+    </EditorPreferencesProvider>
   );
 }

@@ -9,6 +9,8 @@ import { getSidebarCollections, getSearchCollections } from "@/lib/db/collection
 import { ItemDrawerProvider } from "@/components/items/ItemDrawerContext";
 import { ItemDrawer } from "@/components/items/ItemDrawer";
 import { ItemDrawerHost } from "@/components/items/ItemDrawerHost";
+import { getEditorPreferences } from "@/lib/db/settings";
+import { EditorPreferencesProvider } from "@/components/settings/EditorPreferencesContext";
 
 export default async function DashboardLayout({
   children,
@@ -26,12 +28,13 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
-  const [itemTypes, sidebarCollections, searchItems, searchCollections] =
+  const [itemTypes, sidebarCollections, searchItems, searchCollections, editorPreferences] =
     await Promise.all([
       getItemTypesWithCounts(userId),
       getSidebarCollections(userId),
       getSearchItems(userId),
       getSearchCollections(userId),
+      getEditorPreferences(userId),
     ]);
 
   const userData = {
@@ -41,7 +44,8 @@ export default async function DashboardLayout({
   };
 
   return (
-    <ItemDrawerProvider>
+    <EditorPreferencesProvider initialPreferences={editorPreferences}>
+      <ItemDrawerProvider>
       <SidebarProvider>
         <TooltipProvider>
           <div className="flex h-screen flex-col">
@@ -59,5 +63,6 @@ export default async function DashboardLayout({
         </TooltipProvider>
       </SidebarProvider>
     </ItemDrawerProvider>
+    </EditorPreferencesProvider>
   );
 }
