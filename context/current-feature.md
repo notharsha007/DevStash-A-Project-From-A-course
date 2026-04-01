@@ -1,24 +1,14 @@
-# Current Feature: Collections Pages
+# Current Feature
+
+None — ready for next feature.
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Create `/collections` page listing all user collections as cards
-- Create `/collections/[id]` page showing items within a specific collection
-- Reuse existing collection cards and item cards (no new card designs)
-- Link "View all collections" in the sidebar to `/collections`
-- Link each collection card (dashboard + sidebar) to `/collections/[id]`
-
 ## Notes
-
-- Reuse `CollectionCard` from the dashboard for the `/collections` grid
-- Reuse `ItemCard` / `ItemRow` components for the `/collections/[id]` items list
-- The `/collections/[id]` page should display items similar to the `/items/[type]` page — with the drawer, create button, etc.
-- Auth-guard both pages (redirect to login if unauthenticated)
-- Both pages are server components fetching directly via Prisma
 
 ## History
 
@@ -57,3 +47,4 @@ In Progress
 - **2026-04-01** — Completed File List View — `FileListRow` component with extension-based file icon, title, filename, size, relative date ("Today"/"Yesterday"/etc.), always-visible download button; `file-list` variant in `ItemsClientWrapper`; `/items/files` uses single-column list; `fileName`/`fileSize` added to `DashboardItem`; `+ New` button enabled for files and images pages
 - **2026-04-01** — Completed Collection Create — `createCollection` DB function + server action (Zod, auth-guarded); `CreateCollectionDialog` modal with Name/Description fields, toasts, `router.refresh()`; `CollectionsSectionHeader` client component with New button + View all link; wired into dashboard collections section; ItemRow copy button (hover-reveal, clipboard, check icon)
 - **2026-04-01** — Completed Add Item to Collections — `CollectionsSelect` pill-toggle multi-select component; `getUserCollections` DB query + server action; `collectionIds` added to `createItem`/`updateItem` DB functions, Zod schemas, and server actions; Collections field in `CreateItemDialog` (fetches on open) and `ItemDrawer` EditContent (fetches on edit, pre-populates from item); New Collection button in TopBar wired to `CreateCollectionDialog`; fixed pre-existing Zod `.errors` → `.issues` bug and `deleteItem` mock bug in tests
+- **2026-04-01** — Completed Collections Pages — `/collections` page with full grid of all user collections (`getAllCollections` DB query, `CollectionsSectionHeader` + `CollectionCard`); `/collections/[id]` page with mixed-type rendering (regular items in default grid, images in gallery section, files in file-list section); `getCollectionById` + `getItemsByCollection` DB queries; shared layout with auth guard + sidebar; `typeName` field added to `getItemsByCollection` for per-item type detection
