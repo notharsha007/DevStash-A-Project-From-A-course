@@ -398,3 +398,39 @@ export async function getItemTypesWithCounts(
 
   return mapped;
 }
+
+// ─── Search ───────────────────────────────────────────
+
+export interface SearchItem {
+  id: string;
+  title: string;
+  typeName: string;
+  typeIcon: string;
+  typeColor: string;
+  contentPreview: string | null;
+}
+
+export async function getSearchItems(userId: string): Promise<SearchItem[]> {
+  const items = await prisma.item.findMany({
+    where: { userId },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      url: true,
+      fileName: true,
+      itemType: { select: { name: true, icon: true, color: true } },
+    },
+  });
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    typeName: item.itemType.name,
+    typeIcon: item.itemType.icon,
+    typeColor: item.itemType.color,
+    contentPreview: item.content?.slice(0, 80) ?? item.url ?? item.fileName ?? null,
+  }));
+}
+

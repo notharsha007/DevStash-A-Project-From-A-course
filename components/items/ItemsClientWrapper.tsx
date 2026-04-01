@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useItemDrawer } from "@/components/items/ItemDrawerContext";
 import { ItemRow } from "@/components/dashboard/ItemRow";
-import { ItemDrawer } from "@/components/items/ItemDrawer";
 import { ImageThumbnailCard } from "@/components/items/ImageThumbnailCard";
 import { FileListRow } from "@/components/items/FileListRow";
 
@@ -35,63 +34,49 @@ export function ItemsClientWrapper({
   containerClassName = "space-y-2",
   variant = "default",
 }: ItemsClientWrapperProps) {
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  function handleItemClick(id: string) {
-    setSelectedItemId(id);
-    setDrawerOpen(true);
-  }
+  const { openItem } = useItemDrawer();
 
   return (
-    <>
-      <div className={containerClassName}>
-        {items.map((item) =>
-          variant === "gallery" ? (
-            <div key={item.id} onClick={() => handleItemClick(item.id)}>
-              <ImageThumbnailCard title={item.title} fileUrl={item.fileUrl} />
-            </div>
-          ) : variant === "file-list" ? (
-            <FileListRow
-              key={item.id}
+    <div className={containerClassName}>
+      {items.map((item) =>
+        variant === "gallery" ? (
+          <div key={item.id} onClick={() => openItem(item.id)}>
+            <ImageThumbnailCard title={item.title} fileUrl={item.fileUrl} />
+          </div>
+        ) : variant === "file-list" ? (
+          <FileListRow
+            key={item.id}
+            title={item.title}
+            fileName={item.fileName}
+            fileSize={item.fileSize}
+            fileUrl={item.fileUrl}
+            updatedAt={new Date(item.updatedAt)}
+            onClick={() => openItem(item.id)}
+          />
+        ) : (
+          <div
+            key={item.id}
+            onClick={() => openItem(item.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && openItem(item.id)}
+            className="w-full cursor-pointer"
+          >
+            <ItemRow
               title={item.title}
-              fileName={item.fileName}
-              fileSize={item.fileSize}
-              fileUrl={item.fileUrl}
+              description={item.description}
+              content={item.content}
+              url={item.url}
+              tags={item.tags}
+              isPinned={item.isPinned}
+              isFavorite={item.isFavorite}
+              typeIcon={item.typeIcon}
+              typeColor={item.typeColor}
               updatedAt={new Date(item.updatedAt)}
-              onClick={() => handleItemClick(item.id)}
             />
-          ) : (
-            <div
-              key={item.id}
-              onClick={() => handleItemClick(item.id)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && handleItemClick(item.id)}
-              className="w-full cursor-pointer"
-            >
-              <ItemRow
-                title={item.title}
-                description={item.description}
-                content={item.content}
-                url={item.url}
-                tags={item.tags}
-                isPinned={item.isPinned}
-                isFavorite={item.isFavorite}
-                typeIcon={item.typeIcon}
-                typeColor={item.typeColor}
-                updatedAt={new Date(item.updatedAt)}
-              />
-            </div>
-          )
-        )}
-      </div>
-
-      <ItemDrawer
-        itemId={selectedItemId}
-        open={drawerOpen}
-        onOpenChange={setDrawerOpen}
-      />
-    </>
+          </div>
+        )
+      )}
+    </div>
   );
 }

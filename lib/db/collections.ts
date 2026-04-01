@@ -314,3 +314,32 @@ export async function deleteCollection(
     throw new Error("Collection not found or unauthorized");
   }
 }
+
+// ─── Search ───────────────────────────────────────────
+
+export interface SearchCollection {
+  id: string;
+  name: string;
+  itemCount: number;
+}
+
+export async function getSearchCollections(
+  userId: string
+): Promise<SearchCollection[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      _count: { select: { items: true } },
+    },
+  });
+
+  return collections.map((c) => ({
+    id: c.id,
+    name: c.name,
+    itemCount: c._count.items,
+  }));
+}
+

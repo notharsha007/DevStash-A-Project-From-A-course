@@ -4,8 +4,11 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { auth } from "@/auth";
-import { getItemTypesWithCounts } from "@/lib/db/items";
-import { getSidebarCollections } from "@/lib/db/collections";
+import { getItemTypesWithCounts, getSearchItems } from "@/lib/db/items";
+import { getSidebarCollections, getSearchCollections } from "@/lib/db/collections";
+import { ItemDrawerProvider } from "@/components/items/ItemDrawerContext";
+import { ItemDrawer } from "@/components/items/ItemDrawer";
+import { ItemDrawerHost } from "@/components/items/ItemDrawerHost";
 
 export default async function DashboardLayout({
   children,
@@ -23,10 +26,13 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
-  const [itemTypes, sidebarCollections] = await Promise.all([
-    getItemTypesWithCounts(userId),
-    getSidebarCollections(userId),
-  ]);
+  const [itemTypes, sidebarCollections, searchItems, searchCollections] =
+    await Promise.all([
+      getItemTypesWithCounts(userId),
+      getSidebarCollections(userId),
+      getSearchItems(userId),
+      getSearchCollections(userId),
+    ]);
 
   const userData = {
     name: session.user.name ?? "User",
@@ -35,20 +41,23 @@ export default async function DashboardLayout({
   };
 
   return (
-    <SidebarProvider>
-      <TooltipProvider>
-        <div className="flex h-screen flex-col">
-          <TopBar />
-          <div className="flex flex-1 overflow-hidden">
-            <Sidebar
-              itemTypes={itemTypes}
-              collections={sidebarCollections}
-              user={userData}
-            />
-            {children}
+    <ItemDrawerProvider>
+      <SidebarProvider>
+        <TooltipProvider>
+          <div className="flex h-screen flex-col">
+            <TopBar searchItems={searchItems} searchCollections={searchCollections} />
+            <div className="flex flex-1 overflow-hidden">
+              <Sidebar
+                itemTypes={itemTypes}
+                collections={sidebarCollections}
+                user={userData}
+              />
+              {children}
+            </div>
           </div>
-        </div>
-      </TooltipProvider>
-    </SidebarProvider>
+          <ItemDrawerHost />
+        </TooltipProvider>
+      </SidebarProvider>
+    </ItemDrawerProvider>
   );
 }

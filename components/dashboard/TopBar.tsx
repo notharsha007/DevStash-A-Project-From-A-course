@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Plus, FolderPlus, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,11 +8,32 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 import { CreateItemDialog } from "@/components/items/CreateItemDialog";
 import { CreateCollectionDialog } from "@/components/collections/CreateCollectionDialog";
+import { CommandPalette } from "@/components/dashboard/CommandPalette";
+import type { SearchItem } from "@/lib/db/items";
+import type { SearchCollection } from "@/lib/db/collections";
 
-export function TopBar() {
+interface TopBarProps {
+  searchItems: SearchItem[];
+  searchCollections: SearchCollection[];
+}
+
+export function TopBar({ searchItems, searchCollections }: TopBarProps) {
   const { toggleMobile } = useSidebar();
   const [createOpen, setCreateOpen] = useState(false);
   const [collectionOpen, setCollectionOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // Global Cmd+K / Ctrl+K shortcut
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setPaletteOpen((prev) => !prev);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <header className="flex h-14 items-center gap-4 border-b border-border px-4">
@@ -32,14 +53,21 @@ export function TopBar() {
         <span className="text-lg font-semibold">DevStash</span>
       </a>
 
-      <div className="relative mx-auto w-full max-w-md">
+      {/* Search input — opens command palette on click */}
+      <div
+        className="relative mx-auto w-full max-w-md cursor-pointer"
+        onClick={() => setPaletteOpen(true)}
+      >
         <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search items..."
-          className="pl-9"
+          placeholder="Search items and collections..."
+          className="pl-9 pr-12 cursor-pointer"
           readOnly
         />
+        <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+          <span className="text-xs">⌘</span>K
+        </kbd>
       </div>
 
       <div className="flex items-center gap-2">
@@ -69,6 +97,13 @@ export function TopBar() {
 
       <CreateItemDialog open={createOpen} onOpenChange={setCreateOpen} />
       <CreateCollectionDialog open={collectionOpen} onOpenChange={setCollectionOpen} />
+
+      <CommandPalette
+        items={searchItems}
+        collections={searchCollections}
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+      />
     </header>
   );
 }
