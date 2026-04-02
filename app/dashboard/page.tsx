@@ -6,13 +6,17 @@ import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { CollectionsSectionHeader } from "@/components/collections/CollectionsSectionHeader";
 import { ItemsClientWrapper } from "@/components/items/ItemsClientWrapper";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const user = await prisma.user.findUnique({
-    where: { email: "demo@devstash.io" },
-  });
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    redirect("/sign-in");
+  }
 
-  const userId = user?.id ?? "";
+  const userId = session.user.id;
 
   const [recentCollections, collectionStats, pinnedItems, recentItems, itemStats] =
     await Promise.all([
