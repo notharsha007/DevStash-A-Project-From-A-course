@@ -1,23 +1,16 @@
-# Current Feature: Favorite Toggle Actions
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a working favorite toggle button to the item drawer action bar
-- Add a working favorite toggle button to the collection detail page header
-- Add a working favorite toggle action to collection cards
-- Persist favorite state changes for both items and collections
-- Refresh the relevant views so favorite state updates immediately in the UI
-- Preserve the existing visual favorite indicators while making them interactive
+<!-- Goals for the active feature will appear here -->
 
 ## Notes
 
-- Source: inline feature description from `/feature load`
-- Scope is limited to enabling favorite toggles in the existing drawer, collection detail header, and collection cards
-- Reuse current favorite styling and existing auth/ownership patterns
+<!-- Additional context or constraints will appear here -->
 
 ## History
 
@@ -63,3 +56,4 @@ In Progress
 - **2026-04-01** — Completed Settings Page — Extracted account deletion and password resets into an isolated protected route, and synced the sidebar user navigation menu
 - **2026-04-01** — Completed Editor Preferences Settings — `editorPreferences` JSON column in `User`, `EditorPreferencesContext` globally caching and distributing theme, font size, minimap and wordwrap config dynamically to the Monaco editor; unified settings page logic
 - **2026-04-03** — Completed Favorites Page — Added TopBar star navigation, protected `/favorites` route, favorite item/collection queries, and a compact monospace-inspired favorites list with item drawer and collection navigation
+- **2026-04-03** — Completed Favorite Toggle Actions — Added interactive favorite toggles for item drawer actions, collection detail header, and collection cards with persisted server actions, UI refreshes, and test coverage
