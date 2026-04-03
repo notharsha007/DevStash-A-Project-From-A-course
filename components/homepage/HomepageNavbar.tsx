@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
+import { DevStashLogo } from "@/components/shared/DevStashLogo";
 import { cn } from "@/lib/utils";
 
 interface HomepageNavbarProps {
@@ -32,11 +33,8 @@ export function HomepageNavbar({ isAuthenticated }: HomepageNavbarProps) {
       )}
     >
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-          <span className="grid size-8 place-items-center rounded-xl bg-linear-to-br from-blue-500 to-indigo-500 text-sm font-bold text-white shadow-lg shadow-blue-500/25">
-            D
-          </span>
-          <span className="text-lg">DevStash</span>
+        <Link href="/">
+          <DevStashLogo />
         </Link>
 
         <div className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">

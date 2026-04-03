@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
+import { BackButton } from "@/components/dashboard/BackButton";
+import { DevStashLogo } from "@/components/shared/DevStashLogo";
 import { CreateItemDialog } from "@/components/items/CreateItemDialog";
 import { CreateCollectionDialog } from "@/components/collections/CreateCollectionDialog";
 import { CommandPalette } from "@/components/dashboard/CommandPalette";
@@ -16,9 +18,14 @@ import type { SearchCollection } from "@/lib/db/collections";
 interface TopBarProps {
   searchItems: SearchItem[];
   searchCollections: SearchCollection[];
+  showBackButton?: boolean;
 }
 
-export function TopBar({ searchItems, searchCollections }: TopBarProps) {
+export function TopBar({
+  searchItems,
+  searchCollections,
+  showBackButton = false,
+}: TopBarProps) {
   const router = useRouter();
   const { toggleMobile } = useSidebar();
   const [createOpen, setCreateOpen] = useState(false);
@@ -48,11 +55,14 @@ export function TopBar({ searchItems, searchCollections }: TopBarProps) {
         <PanelLeft className="size-5" />
       </Button>
 
-      <a href="/dashboard" className="flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
-          <span className="text-sm font-bold text-primary-foreground">D</span>
-        </div>
-        <span className="text-lg font-semibold">DevStash</span>
+      {showBackButton && <BackButton />}
+
+      <a href="/dashboard">
+        <DevStashLogo
+          className="gap-2"
+          iconClassName="rounded-lg bg-primary shadow-none"
+          textClassName="font-semibold"
+        />
       </a>
 
       {/* Search input — opens command palette on click */}
