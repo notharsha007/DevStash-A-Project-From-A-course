@@ -1,27 +1,16 @@
-# Current Feature: Auth Nav and Folder Logo
+# Current Feature: None
 
 ## Status
 
-Not Started
+Idle
 
 ## Goals
 
-- Add the homepage-style top navigation to the sign-in page
-- Add the homepage-style top navigation to the sign-up page
-- Keep auth-page navigation visually consistent with the landing page
-- Change the current `D` logo mark to a folder-like icon on the landing page
-- Change the current `D` logo mark to a folder-like icon in the dashboard/top bar
-- Keep the updated branding consistent across the affected surfaces
+- No feature currently loaded
 
 ## Notes
 
-- Scope:
-  - landing page
-  - dashboard/top bar
-  - sign-in page
-  - sign-up/register page
-- Preserve the current app theme and avoid making auth pages feel disconnected from the landing page
-- Reuse shared UI/components where practical instead of duplicating nav/logo markup
+- Ready for the next `/feature load`
 
 ## History
 
@@ -72,3 +61,4 @@ Not Started
 - **2026-04-03** — Completed Pinned Items — Added item pin toggling in the drawer, pinned-first sorting in item listings, and supporting server action + test coverage
 - **2026-04-03** — Completed Homepage Mockup — Added a standalone marketing prototype in `prototypes/homepage/` with animated chaos-to-order hero visuals, centered marketing sections, pricing toggle, and responsive layout refinements
 - **2026-04-03** — Completed Homepage — Replaced the placeholder `/` route with the integrated landing page, including homepage-specific server/client components, prototype-inspired motion, real app CTA routing, and dashboard-consistent styling
+- **2026-04-03** — Completed Auth Nav and Folder Logo — Added homepage-style top nav to auth pages, replaced the `D` branding mark with a shared folder-style logo, and included the shared back button across protected pages except the dashboard
