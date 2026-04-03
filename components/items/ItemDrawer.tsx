@@ -17,7 +17,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2, Download, FileIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
-import { updateItem, deleteItem, toggleItemFavorite } from "@/actions/items";
+import {
+  updateItem,
+  deleteItem,
+  toggleItemFavorite,
+  toggleItemPin,
+} from "@/actions/items";
 import { getUserCollections } from "@/actions/collections";
 import { CodeEditor } from "@/components/items/CodeEditor";
 import { MarkdownEditor } from "@/components/items/MarkdownEditor";
@@ -118,13 +123,17 @@ function ViewContent({
   onEdit,
   onDeleteRequest,
   onFavoriteToggle,
+  onPinToggle,
   favoriteLoading,
+  pinLoading,
 }: {
   item: ItemDetailResponse;
   onEdit: () => void;
   onDeleteRequest: () => void;
   onFavoriteToggle: () => void;
+  onPinToggle: () => void;
   favoriteLoading: boolean;
+  pinLoading: boolean;
 }) {
   return (
     <>
@@ -172,8 +181,14 @@ function ViewContent({
           />
           Favorite
         </Button>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-sm">
-          <Pin className="size-4" />
+        <Button
+          variant="ghost"
+          size="sm"
+          className={`gap-1.5 text-sm ${item.isPinned ? "text-foreground" : ""}`}
+          onClick={onPinToggle}
+          disabled={pinLoading}
+        >
+          <Pin className={`size-4 ${item.isPinned ? "fill-current" : ""}`} />
           Pin
         </Button>
         {!IMAGE_TYPES.includes(item.itemType.name.toLowerCase()) && (
@@ -682,6 +697,7 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [togglingFavorite, setTogglingFavorite] = useState(false);
+  const [togglingPin, setTogglingPin] = useState(false);
 
   useEffect(() => {
     if (!itemId || !open) return;
@@ -749,6 +765,52 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
     router.refresh();
   }
 
+  async function handleTogglePin() {
+    if (!item) return;
+
+    const previousIsPinned = item.isPinned;
+
+    setTogglingPin(true);
+    setItem((current) =>
+      current
+        ? {
+            ...current,
+            isPinned: !current.isPinned,
+          }
+        : current
+    );
+
+    const result = await toggleItemPin(item.id);
+    setTogglingPin(false);
+
+    if (!result.success) {
+      setItem((current) =>
+        current
+          ? {
+              ...current,
+              isPinned: previousIsPinned,
+            }
+          : current
+      );
+      toast.error(result.error ?? "Failed to update pin");
+      return;
+    }
+
+    setItem({
+      ...result.data,
+      createdAt:
+        result.data.createdAt instanceof Date
+          ? result.data.createdAt.toISOString()
+          : String(result.data.createdAt),
+      updatedAt:
+        result.data.updatedAt instanceof Date
+          ? result.data.updatedAt.toISOString()
+          : String(result.data.updatedAt),
+    });
+    toast.success(result.data.isPinned ? "Item pinned" : "Item unpinned");
+    router.refresh();
+  }
+
   return (
     <>
       <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -770,7 +832,9 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
               onEdit={() => setIsEditing(true)}
               onDeleteRequest={() => setDeleteConfirmOpen(true)}
               onFavoriteToggle={handleToggleFavorite}
+              onPinToggle={handleTogglePin}
               favoriteLoading={togglingFavorite}
+              pinLoading={togglingPin}
             />
           )}
         </SheetContent>

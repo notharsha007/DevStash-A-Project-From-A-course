@@ -4,13 +4,14 @@ vi.mock("@/lib/prisma", () => ({
   prisma: {
     item: {
       findFirst: vi.fn(),
+      findMany: vi.fn(),
       update: vi.fn(),
     },
   },
 }));
 
 import { prisma } from "@/lib/prisma";
-import { getItemDetail, updateItem, toggleItemFavorite } from "./items";
+import { getItemDetail, getItemsByType, updateItem, toggleItemFavorite, toggleItemPin } from "./items";
 
 const mockPrismaItem = {
   id: "item-1",
@@ -238,6 +239,61 @@ describe("toggleItemFavorite", () => {
       expect.objectContaining({
         where: { id: "item-1" },
         data: { isFavorite: true },
+      })
+    );
+  });
+});
+
+describe("toggleItemPin", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns null when ownership check fails", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue(null);
+
+    const result = await toggleItemPin("user-1", "item-1");
+
+    expect(result).toBeNull();
+    expect(prisma.item.update).not.toHaveBeenCalled();
+  });
+
+  it("toggles isPinned based on the existing item state", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue({
+      id: "item-1",
+      isPinned: false,
+    } as any);
+    vi.mocked(prisma.item.update).mockResolvedValue({
+      ...mockPrismaItem,
+      isPinned: true,
+      tags: [],
+      collections: [],
+    } as any);
+
+    await toggleItemPin("user-1", "item-1");
+
+    expect(prisma.item.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "item-1" },
+        data: { isPinned: true },
+      })
+    );
+  });
+});
+
+describe("getItemsByType", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("orders pinned items ahead of other items", async () => {
+    vi.mocked(prisma.item.findMany).mockResolvedValue([]);
+
+    await getItemsByType("user-1", "snippet");
+
+    expect(prisma.item.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderBy: [{ isPinned: "desc" }, { updatedAt: "desc" }],
       })
     );
   });
