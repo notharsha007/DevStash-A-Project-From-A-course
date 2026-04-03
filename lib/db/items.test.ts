@@ -10,7 +10,7 @@ vi.mock("@/lib/prisma", () => ({
 }));
 
 import { prisma } from "@/lib/prisma";
-import { getItemDetail, updateItem } from "./items";
+import { getItemDetail, updateItem, toggleItemFavorite } from "./items";
 
 const mockPrismaItem = {
   id: "item-1",
@@ -203,5 +203,42 @@ describe("updateItem", () => {
     expect(result?.description).toBe("New desc");
     expect(result?.tags).toEqual(["typescript"]);
     expect(result?.collections).toEqual([]);
+  });
+});
+
+describe("toggleItemFavorite", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns null when ownership check fails", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue(null);
+
+    const result = await toggleItemFavorite("user-1", "item-1");
+
+    expect(result).toBeNull();
+    expect(prisma.item.update).not.toHaveBeenCalled();
+  });
+
+  it("toggles isFavorite based on the existing item state", async () => {
+    vi.mocked(prisma.item.findFirst).mockResolvedValue({
+      id: "item-1",
+      isFavorite: false,
+    } as any);
+    vi.mocked(prisma.item.update).mockResolvedValue({
+      ...mockPrismaItem,
+      isFavorite: true,
+      tags: [],
+      collections: [],
+    } as any);
+
+    await toggleItemFavorite("user-1", "item-1");
+
+    expect(prisma.item.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "item-1" },
+        data: { isFavorite: true },
+      })
+    );
   });
 });
