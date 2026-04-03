@@ -1,23 +1,16 @@
-# Current Feature: Homepage Mockup
+# Current Feature: None
 
 ## Status
 
-In Progress
+Idle
 
 ## Goals
 
-- Create the homepage mockup in `prototypes/homepage/`
-- Add `index.html`, `styles.css`, and `script.js`
-- Build the hero around the "chaos to order" concept
-- Include the navigation, hero text, features, AI section, pricing, CTA, and footer
-- Implement the requested animations for chaos icons, arrow pulse, scroll reveals, and navbar opacity
-- Keep the layout responsive, including the stacked mobile hero and rotated arrow
+- No feature currently loaded
 
 ## Notes
 
-- Source spec: `context/features/homepage-mockup-spec.md`
-- This is a marketing mockup, not an app runtime change
-- Use the provided item-type accent colors throughout the visual system
+- Ready for the next `/feature load`
 
 ## History
 
@@ -66,3 +59,4 @@ In Progress
 - **2026-04-03** — Completed Favorite Toggle Actions — Added interactive favorite toggles for item drawer actions, collection detail header, and collection cards with persisted server actions, UI refreshes, and test coverage
 - **2026-04-03** — Completed Favorites Sorting — Added client-side Favorites sorting controls for date, name, and item type while preserving the compact layout, item drawer opening, and collection navigation
 - **2026-04-03** — Completed Pinned Items — Added item pin toggling in the drawer, pinned-first sorting in item listings, and supporting server action + test coverage
+- **2026-04-03** — Completed Homepage Mockup — Added a standalone marketing prototype in `prototypes/homepage/` with animated chaos-to-order hero visuals, centered marketing sections, pricing toggle, and responsive layout refinements
