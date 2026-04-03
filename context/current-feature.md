@@ -1,24 +1,16 @@
-# Current Feature: Favorites Sorting
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add client-side sorting controls to the Favorites page
-- Support sorting favorites by name
-- Support sorting favorites by date
-- Support sorting favorites by item type
-- Apply sorting without a page reload
-- Preserve existing item drawer behavior and collection navigation
+<!-- Goals for the active feature will appear here -->
 
 ## Notes
 
-- Source: inline feature description from `/feature load`
-- Sorting should happen client-side on the Favorites page
-- Keep the existing compact favorites layout and sectioned item/collection presentation
-- Item type sorting should work sensibly for both items and collections
+<!-- Additional context or constraints will appear here -->
 
 ## History
 
@@ -65,3 +57,4 @@ In Progress
 - **2026-04-01** — Completed Editor Preferences Settings — `editorPreferences` JSON column in `User`, `EditorPreferencesContext` globally caching and distributing theme, font size, minimap and wordwrap config dynamically to the Monaco editor; unified settings page logic
 - **2026-04-03** — Completed Favorites Page — Added TopBar star navigation, protected `/favorites` route, favorite item/collection queries, and a compact monospace-inspired favorites list with item drawer and collection navigation
 - **2026-04-03** — Completed Favorite Toggle Actions — Added interactive favorite toggles for item drawer actions, collection detail header, and collection cards with persisted server actions, UI refreshes, and test coverage
+- **2026-04-03** — Completed Favorites Sorting — Added client-side Favorites sorting controls for date, name, and item type while preserving the compact layout, item drawer opening, and collection navigation
