@@ -304,7 +304,7 @@ export async function getItemsByCollection(
       userId,
       collections: { some: { collectionId } },
     },
-    orderBy: { updatedAt: "desc" },
+    orderBy: [{ isPinned: "desc" }, { updatedAt: "desc" }],
     skip,
     take: limit,
     include: {
