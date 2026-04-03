@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevStash Homepage Mockup</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="site-header">
+      <nav class="nav shell">
+        <a href="#" class="brand">
+          <span class="brand-mark">D</span>
+          <span class="brand-text">DevStash</span>
+        </a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        <div class="nav-actions">
+          <a href="#" class="button button-ghost">Sign In</a>
+          <a href="#" class="button button-primary">Get Started</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero shell">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Developer Knowledge Hub</p>
+          <h1>
+            Stop Losing Your
+            <span class="text-gradient">Developer Knowledge</span>
+          </h1>
+          <p class="hero-subcopy">
+            Snippets in Slack, commands in terminal history, prompts in random docs,
+            and links buried across tabs. DevStash turns scattered knowledge into one
+            organized, searchable workspace.
+          </p>
+          <div class="hero-actions">
+            <a href="#" class="button button-primary">Start for Free</a>
+            <a href="#features" class="button button-secondary">See the Workflow</a>
+          </div>
+          <div class="hero-metrics">
+            <div>
+              <strong>7 item types</strong>
+              <span>Snippets, prompts, notes, files and more</span>
+            </div>
+            <div>
+              <strong>Instant retrieval</strong>
+              <span>Searchable context instead of memory games</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="chaos-order-stage">
+            <section class="chaos-panel">
+              <p class="panel-label">Your knowledge today...</p>
+              <div class="chaos-box" id="chaos-box">
+                <button class="chaos-icon notion" data-label="Notion">N</button>
+                <button class="chaos-icon github" data-label="GitHub">GH</button>
+                <button class="chaos-icon slack" data-label="Slack">S</button>
+                <button class="chaos-icon vscode" data-label="VS Code">VS</button>
+                <button class="chaos-icon tabs" data-label="Browser Tabs">Tabs</button>
+                <button class="chaos-icon terminal" data-label="Terminal">&gt;</button>
+                <button class="chaos-icon txt" data-label="Text File">TXT</button>
+                <button class="chaos-icon bookmark" data-label="Bookmark">BM</button>
+              </div>
+            </section>
+
+            <div class="transform-arrow" aria-hidden="true">
+              <span class="arrow-shaft"></span>
+              <span class="arrow-head"></span>
+            </div>
+
+            <section class="order-panel">
+              <p class="panel-label">...with DevStash</p>
+              <div class="dashboard-preview">
+                <aside class="dashboard-sidebar">
+                  <div class="sidebar-brand">DevStash</div>
+                  <span>Dashboard</span>
+                  <span>Favorites</span>
+                  <span>Collections</span>
+                  <span>Prompts</span>
+                  <span>Settings</span>
+                </aside>
+                <div class="dashboard-main">
+                  <div class="mock-toolbar">
+                    <span class="pill">Pinned</span>
+                    <span class="pill">AI Ready</span>
+                    <span class="pill">Search</span>
+                  </div>
+                  <div class="mock-grid">
+                    <article class="mock-card snippet">
+                      <h3>Auth Hook</h3>
+                      <p>Reusable token refresh flow</p>
+                    </article>
+                    <article class="mock-card prompt">
+                      <h3>Refactor Prompt</h3>
+                      <p>LLM context with constraints</p>
+                    </article>
+                    <article class="mock-card command">
+                      <h3>Deploy Script</h3>
+                      <p>One-liner release workflow</p>
+                    </article>
+                    <article class="mock-card note">
+                      <h3>Debug Notes</h3>
+                      <p>Why the cache bug happened</p>
+                    </article>
+                    <article class="mock-card file">
+                      <h3>API Schema</h3>
+                      <p>Shared contract PDF</p>
+                    </article>
+                    <article class="mock-card link">
+                      <h3>Docs Link</h3>
+                      <p>Reference URL for setup</p>
+                    </article>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="features shell reveal" id="features">
+        <div class="section-heading">
+          <p class="eyebrow">Core Features</p>
+          <h2>Everything you need to keep developer context within reach</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card snippet">
+            <h3>Code Snippets</h3>
+            <p>Store reusable code with tags, languages, and collection context.</p>
+          </article>
+          <article class="feature-card prompt">
+            <h3>AI Prompts</h3>
+            <p>Save the prompts that actually work instead of rewriting them every sprint.</p>
+          </article>
+          <article class="feature-card link">
+            <h3>Instant Search</h3>
+            <p>Jump straight to the right note, link, snippet, or command from one place.</p>
+          </article>
+          <article class="feature-card command">
+            <h3>Commands</h3>
+            <p>Keep shell commands, scripts, and infra shortcuts where the team can find them.</p>
+          </article>
+          <article class="feature-card file">
+            <h3>Files &amp; Docs</h3>
+            <p>Attach specs, screenshots, exports, and references to the same workspace.</p>
+          </article>
+          <article class="feature-card note">
+            <h3>Collections</h3>
+            <p>Bundle related knowledge into focused stacks for projects, audits, or launches.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="ai-section shell reveal">
+        <div class="ai-copy">
+          <span class="badge-pro">Pro Feature</span>
+          <h2>AI assistance that works with your real developer context</h2>
+          <ul class="checklist">
+            <li>Generate tags from your snippets and notes</li>
+            <li>Summarize large docs into actionable takeaways</li>
+            <li>Turn rough ideas into reusable prompt templates</li>
+            <li>Find related items across collections in seconds</li>
+          </ul>
+        </div>
+        <div class="editor-mock">
+          <div class="editor-topbar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <pre><code>const deploymentChecklist = {
+  task: "Ship dashboard search",
+  risks: ["rate limiting", "cache misses"],
+  aiPrompt: "Generate tags for this release context"
+};</code></pre>
+          <div class="tag-demo">
+            <span>AI Generated Tags</span>
+            <div class="tag-row">
+              <b>release</b>
+              <b>search</b>
+              <b>debugging</b>
+              <b>dashboard</b>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing shell reveal" id="pricing">
+        <div class="section-heading">
+          <p class="eyebrow">Pricing</p>
+          <h2>Start free, upgrade when your knowledge hub becomes mission critical</h2>
+        </div>
+        <div class="billing-toggle" role="group" aria-label="Billing cycle">
+          <button class="billing-button is-active" data-billing="monthly">Monthly</button>
+          <button class="billing-button" data-billing="yearly">Yearly</button>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Free</h3>
+            <p class="price"><span>$0</span><small>/forever</small></p>
+            <ul>
+              <li>Up to 50 items</li>
+              <li>3 collections</li>
+              <li>Core search and organization</li>
+            </ul>
+            <a href="#" class="button button-secondary button-full">Start Free</a>
+          </article>
+          <article class="price-card price-card-pro">
+            <div class="price-badge">Most Popular</div>
+            <h3>Pro</h3>
+            <p class="price">
+              <span data-price data-monthly="$8" data-yearly="$72">$8</span>
+              <small data-price-suffix>/mo</small>
+            </p>
+            <ul>
+              <li>Unlimited items and collections</li>
+              <li>AI features and generated tags</li>
+              <li>Advanced organization for power users</li>
+            </ul>
+            <a href="#" class="button button-primary button-full">Go Pro</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta shell reveal">
+        <div class="cta-panel">
+          <p class="eyebrow">Ready to Organize Your Knowledge?</p>
+          <h2>Give your snippets, prompts, files, and notes a home that actually works.</h2>
+          <a href="#" class="button button-primary">Get Started with DevStash</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-grid">
+        <div>
+          <a href="#" class="brand footer-brand">
+            <span class="brand-mark">D</span>
+            <span class="brand-text">DevStash</span>
+          </a>
+          <p>Developer knowledge, finally organized.</p>
+        </div>
+        <div>
+          <h3>Product</h3>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#">Security</a>
+        </div>
+        <div>
+          <h3>Resources</h3>
+          <a href="#">Docs</a>
+          <a href="#">Guides</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div>
+          <h3>Company</h3>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy</a>
+        </div>
+      </div>
+      <p class="footer-note">&copy; <span id="year"></span> DevStash. All rights reserved.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
