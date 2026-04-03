@@ -1,12 +1,22 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Folder, Star } from "lucide-react";
 import { useItemDrawer } from "@/components/items/ItemDrawerContext";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { iconMap } from "@/lib/icon-map";
 import type { FavoriteItem } from "@/lib/db/items";
 import type { FavoriteCollection } from "@/lib/db/collections";
+
+type SortOption = "date" | "name" | "type";
 
 interface FavoritesListProps {
   items: Array<Omit<FavoriteItem, "updatedAt"> & { updatedAt: string }>;
@@ -39,6 +49,10 @@ function SectionHeader({ title, count }: { title: string; count: number }) {
       <span className="font-mono text-xs text-muted-foreground">{count}</span>
     </div>
   );
+}
+
+function compareByName(a: string, b: string) {
+  return a.localeCompare(b, undefined, { sensitivity: "base" });
 }
 
 function FavoriteItemRow({
@@ -133,7 +147,45 @@ function FavoriteCollectionRow({
 
 export function FavoritesList({ items, collections }: FavoritesListProps) {
   const { openItem } = useItemDrawer();
+  const [sortBy, setSortBy] = useState<SortOption>("date");
   const isEmpty = items.length === 0 && collections.length === 0;
+
+  const sortedItems = useMemo(() => {
+    const copy = [...items];
+
+    copy.sort((a, b) => {
+      if (sortBy === "name") {
+        return compareByName(a.title, b.title);
+      }
+
+      if (sortBy === "type") {
+        const typeCompare = compareByName(a.typeName, b.typeName);
+        return typeCompare !== 0 ? typeCompare : compareByName(a.title, b.title);
+      }
+
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+
+    return copy;
+  }, [items, sortBy]);
+
+  const sortedCollections = useMemo(() => {
+    const copy = [...collections];
+
+    copy.sort((a, b) => {
+      if (sortBy === "name") {
+        return compareByName(a.name, b.name);
+      }
+
+      if (sortBy === "type") {
+        return compareByName(a.name, b.name);
+      }
+
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+
+    return copy;
+  }, [collections, sortBy]);
 
   if (isEmpty) {
     return (
@@ -149,15 +201,45 @@ export function FavoritesList({ items, collections }: FavoritesListProps) {
 
   return (
     <div className="space-y-8">
+      <div className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/40 px-3 py-3">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
+            Sort
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Reorder favorites client-side without leaving the page.
+          </p>
+        </div>
+
+        <Select
+          items={[
+            { value: "date", label: "Date" },
+            { value: "name", label: "Name" },
+            { value: "type", label: "Item Type" },
+          ]}
+          value={sortBy}
+          onValueChange={(value) => setSortBy(value as SortOption)}
+        >
+          <SelectTrigger className="w-36 font-mono" size="sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align="end">
+            <SelectItem value="date">Date</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="type">Item Type</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <section className="space-y-3">
-        <SectionHeader title="Items" count={items.length} />
+        <SectionHeader title="Items" count={sortedItems.length} />
         <div className="overflow-hidden rounded-xl border border-border/70 bg-card/40">
-          {items.length === 0 ? (
+          {sortedItems.length === 0 ? (
             <div className="px-3 py-6 text-sm text-muted-foreground">
               No favorite items yet.
             </div>
           ) : (
-            items.map((item) => (
+            sortedItems.map((item) => (
               <FavoriteItemRow key={item.id} item={item} onOpen={openItem} />
             ))
           )}
@@ -165,14 +247,14 @@ export function FavoritesList({ items, collections }: FavoritesListProps) {
       </section>
 
       <section className="space-y-3">
-        <SectionHeader title="Collections" count={collections.length} />
+        <SectionHeader title="Collections" count={sortedCollections.length} />
         <div className="overflow-hidden rounded-xl border border-border/70 bg-card/40">
-          {collections.length === 0 ? (
+          {sortedCollections.length === 0 ? (
             <div className="px-3 py-6 text-sm text-muted-foreground">
               No favorite collections yet.
             </div>
           ) : (
-            collections.map((collection) => (
+            sortedCollections.map((collection) => (
               <FavoriteCollectionRow key={collection.id} collection={collection} />
             ))
           )}
