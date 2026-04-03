@@ -9,6 +9,7 @@ const PROTECTED_PREFIXES = [
   "/profile",
   "/collections",
   "/items",
+  "/favorites",
   "/search",
   "/settings",
 ];

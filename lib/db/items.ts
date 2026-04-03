@@ -83,6 +83,10 @@ export interface DashboardItem {
   updatedAt: Date;
 }
 
+export interface FavoriteItem extends DashboardItem {
+  typeName: string;
+}
+
 function toDashboardItem(
   item: {
     id: string;
@@ -149,6 +153,19 @@ export async function getRecentItems(
   });
 
   return items.map(toDashboardItem);
+}
+
+export async function getFavoriteItems(userId: string): Promise<FavoriteItem[]> {
+  const items = await prisma.item.findMany({
+    where: { userId, isFavorite: true },
+    orderBy: { updatedAt: "desc" },
+    include: itemInclude,
+  });
+
+  return items.map((item) => ({
+    ...toDashboardItem(item),
+    typeName: item.itemType.name.toLowerCase(),
+  }));
 }
 
 export async function countItemsByType(

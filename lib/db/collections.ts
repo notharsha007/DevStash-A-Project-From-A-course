@@ -16,6 +16,15 @@ export interface DashboardCollection {
   updatedAt: Date;
 }
 
+export interface FavoriteCollection {
+  id: string;
+  name: string;
+  description: string | null;
+  isFavorite: boolean;
+  itemCount: number;
+  updatedAt: Date;
+}
+
 export async function getRecentCollections(
   userId: string,
   limit = DASHBOARD_COLLECTIONS_LIMIT
@@ -142,6 +151,32 @@ export async function getCollectionStats(userId: string) {
   ]);
 
   return { totalCollections, favoriteCollections };
+}
+
+export async function getFavoriteCollections(
+  userId: string
+): Promise<FavoriteCollection[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId, isFavorite: true },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      isFavorite: true,
+      updatedAt: true,
+      _count: { select: { items: true } },
+    },
+  });
+
+  return collections.map((collection) => ({
+    id: collection.id,
+    name: collection.name,
+    description: collection.description,
+    isFavorite: collection.isFavorite,
+    itemCount: collection._count.items,
+    updatedAt: collection.updatedAt,
+  }));
 }
 
 export async function getUserCollections(
