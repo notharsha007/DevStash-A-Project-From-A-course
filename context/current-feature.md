@@ -1,26 +1,16 @@
-# Current Feature: Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a star icon button to the TopBar linking to `/favorites`
-- Create a protected `/favorites` route
-- Fetch all user favorited items and collections
-- Render favorites in a compact, dev-focused list view instead of cards
-- Show item and collection sections with counts
-- Make item rows open the `ItemDrawer` and collection rows navigate to `/collections/[id]`
-- Show an empty state when the user has no favorites
-- Sort favorites by `updatedAt` so the most recently favorited content appears first
+<!-- Goals for the active feature will appear here -->
 
 ## Notes
 
-- Source spec: `context/features/favorites-spec.md`
-- UI direction: VS Code / terminal style list with high density, subtle hover states, and no heavy card treatment
-- Row content should include type icon, title, type badge, and date added
-- Use monospace or semi-monospace styling where it supports the compact developer-focused feel
+<!-- Additional context or constraints will appear here -->
 
 ## History
 
@@ -65,3 +55,4 @@ In Progress
 - **2026-04-01** — Completed Pagination — Added skip/take DB queries, counting helpers, shared PaginationControls via shadcn, correctly tested page bounds, and refactored listings across items and collections
 - **2026-04-01** — Completed Settings Page — Extracted account deletion and password resets into an isolated protected route, and synced the sidebar user navigation menu
 - **2026-04-01** — Completed Editor Preferences Settings — `editorPreferences` JSON column in `User`, `EditorPreferencesContext` globally caching and distributing theme, font size, minimap and wordwrap config dynamically to the Monaco editor; unified settings page logic
+- **2026-04-03** — Completed Favorites Page — Added TopBar star navigation, protected `/favorites` route, favorite item/collection queries, and a compact monospace-inspired favorites list with item drawer and collection navigation
