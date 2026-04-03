@@ -1,16 +1,78 @@
-# Current Feature: None
+# Current Feature: Homepage
 
 ## Status
 
-Idle
+In Progress
 
 ## Goals
 
-- No feature currently loaded
+- Build the actual DevStash landing page in the app using the homepage mockup as the visual reference
+- Replace the standalone mockup output requirement with a real integrated homepage implementation
+- Use a dark theme with the specified item-type accent colors:
+  - Snippet: `#3b82f6`
+  - Prompt: `#f59e0b`
+  - Command: `#06b6d4`
+  - Note: `#22c55e`
+  - File: `#64748b`
+  - Image: `#ec4899`
+  - URL: `#6366f1`
+- Build the hero around the "chaos to order" concept
+- Add the chaos container labeled "Your knowledge today..." with 8 floating icons:
+  - Notion
+  - GitHub
+  - Slack
+  - VS Code
+  - Browser tabs
+  - Terminal
+  - Text file
+  - Bookmark
+- Add the center transform arrow pointing from chaos to order
+- Add the DevStash dashboard preview labeled "...with DevStash" with:
+  - sidebar with nav items
+  - grid of item cards
+  - colored top borders using item-type accent colors
+- Add the fixed top navigation with logo, Features/Pricing links, and Sign In/Get Started actions
+- Add hero text with headline, subheadline, and CTA buttons
+- Add the 6-card features grid:
+  - Code Snippets
+  - AI Prompts
+  - Instant Search
+  - Commands
+  - Files & Docs
+  - Collections
+- Add the AI section with:
+  - Pro Feature badge
+  - checklist of AI capabilities
+  - code editor mockup
+  - AI Generated Tags demo
+- Add the pricing section with:
+  - Free tier at `$0`
+  - Pro tier at `$8/mo`
+  - yearly toggle for `$72`
+  - Most Popular highlight on Pro
+- Add the CTA section
+- Add the footer with logo, link columns, and current year
+- Break the page into server and client components where appropriate
+- Use Tailwind/ShadCN patterns consistent with the rest of the project
+- Keep implementation clean, reusable, and DRY
+- Keep the homepage visually consistent with the dashboard so the experience feels cohesive
+- Make buttons and links go to the correct in-app destinations
 
 ## Notes
 
-- Ready for the next `/feature load`
+- Source references:
+  - `context/features/homepage-mockup-spec.md`
+  - `context/features/homepage-spec.md`
+  - `prototypes/homepage/`
+- This should be integrated into the app as the actual landing page, not left as a standalone mockup
+- Chaos icons should animate with `requestAnimationFrame`
+- Chaos icons should drift, bounce off walls, subtly rotate/pulse, and repel from the mouse cursor
+- Arrow should have a CSS pulse animation
+- Sections should fade in on scroll
+- Navbar should become more opaque on scroll
+- Mobile layout should stack the chaos/arrow/dashboard vertically
+- Arrow should rotate to point downward on mobile
+- Prefer server components for static sections and client components only where interactivity is needed
 
 ## History
 
