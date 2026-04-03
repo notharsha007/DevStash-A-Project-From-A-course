@@ -7,6 +7,7 @@ import {
   getUserCollections as dbGetUserCollections,
   updateCollection as dbUpdateCollection,
   deleteCollection as dbDeleteCollection,
+  toggleCollectionFavorite as dbToggleCollectionFavorite,
 } from "@/lib/db/collections";
 
 const CreateCollectionSchema = z.object({
@@ -101,4 +102,24 @@ export async function deleteCollection(
   } catch {
     return { success: false, error: "Collection not found" };
   }
+}
+
+type ToggleCollectionFavoriteResult =
+  | { success: true; data: { id: string; isFavorite: boolean } }
+  | { success: false; error: string };
+
+export async function toggleCollectionFavorite(
+  collectionId: string
+): Promise<ToggleCollectionFavoriteResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const collection = await dbToggleCollectionFavorite(session.user.id, collectionId);
+  if (!collection) {
+    return { success: false, error: "Collection not found" };
+  }
+
+  return { success: true, data: collection };
 }

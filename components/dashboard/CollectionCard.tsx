@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { iconMap } from "@/lib/icon-map";
 import { EditCollectionDialog } from "@/components/collections/EditCollectionDialog";
-import { deleteCollection } from "@/actions/collections";
+import { deleteCollection, toggleCollectionFavorite } from "@/actions/collections";
 
 interface CollectionCardProps {
   id: string;
@@ -54,9 +54,11 @@ export function CollectionCard({
   itemTypeIcons,
 }: CollectionCardProps) {
   const router = useRouter();
+  const [favorite, setFavorite] = useState(isFavorite);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [togglingFavorite, setTogglingFavorite] = useState(false);
 
   async function handleDelete() {
     setDeleting(true);
@@ -73,6 +75,23 @@ export function CollectionCard({
     router.refresh();
   }
 
+  async function handleToggleFavorite() {
+    setTogglingFavorite(true);
+    const result = await toggleCollectionFavorite(id);
+    setTogglingFavorite(false);
+
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+
+    setFavorite(result.data.isFavorite);
+    toast.success(
+      result.data.isFavorite ? "Collection added to favorites" : "Collection removed from favorites"
+    );
+    router.refresh();
+  }
+
   return (
     <>
       <Card
@@ -83,7 +102,7 @@ export function CollectionCard({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {name}
-            {isFavorite && (
+            {favorite && (
               <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
             )}
           </CardTitle>
@@ -105,9 +124,12 @@ export function CollectionCard({
                   <Pencil className="size-4" />
                   Edit
                 </DropdownMenuItem>
-                <DropdownMenuItem disabled>
+                <DropdownMenuItem
+                  onClick={handleToggleFavorite}
+                  disabled={togglingFavorite}
+                >
                   <Star className="size-4" />
-                  Favorite
+                  {favorite ? "Remove Favorite" : "Favorite"}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

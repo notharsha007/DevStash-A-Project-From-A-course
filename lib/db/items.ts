@@ -280,6 +280,57 @@ export async function updateItem(
   };
 }
 
+export async function toggleItemFavorite(
+  userId: string,
+  itemId: string
+): Promise<ItemDetail | null> {
+  const existing = await prisma.item.findFirst({
+    where: { id: itemId, userId },
+  });
+
+  if (!existing) return null;
+
+  const item = await prisma.item.update({
+    where: { id: itemId },
+    data: {
+      isFavorite: !existing.isFavorite,
+    },
+    include: {
+      itemType: true,
+      tags: { include: { tag: true } },
+      collections: { include: { collection: true } },
+    },
+  });
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    content: item.content,
+    contentType: item.contentType,
+    language: item.language,
+    url: item.url,
+    fileName: item.fileName,
+    fileUrl: item.fileUrl,
+    fileSize: item.fileSize,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    itemType: {
+      id: item.itemType.id,
+      name: item.itemType.name,
+      icon: item.itemType.icon,
+      color: item.itemType.color,
+    },
+    tags: item.tags.map((t) => t.tag.name),
+    collections: item.collections.map((c) => ({
+      id: c.collection.id,
+      name: c.collection.name,
+    })),
+  };
+}
+
 export interface CreateItemData {
   typeName: string;
   title: string;

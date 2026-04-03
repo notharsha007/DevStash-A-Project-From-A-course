@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Clock, Save, X, Loader2, Download, FileIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
-import { updateItem, deleteItem } from "@/actions/items";
+import { updateItem, deleteItem, toggleItemFavorite } from "@/actions/items";
 import { getUserCollections } from "@/actions/collections";
 import { CodeEditor } from "@/components/items/CodeEditor";
 import { MarkdownEditor } from "@/components/items/MarkdownEditor";
@@ -117,10 +117,14 @@ function ViewContent({
   item,
   onEdit,
   onDeleteRequest,
+  onFavoriteToggle,
+  favoriteLoading,
 }: {
   item: ItemDetailResponse;
   onEdit: () => void;
   onDeleteRequest: () => void;
+  onFavoriteToggle: () => void;
+  favoriteLoading: boolean;
 }) {
   return (
     <>
@@ -160,6 +164,8 @@ function ViewContent({
           variant="ghost"
           size="sm"
           className={`gap-1.5 text-sm ${item.isFavorite ? "text-yellow-500" : ""}`}
+          onClick={onFavoriteToggle}
+          disabled={favoriteLoading}
         >
           <Star
             className={`size-4 ${item.isFavorite ? "fill-yellow-500 text-yellow-500" : ""}`}
@@ -675,6 +681,7 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [togglingFavorite, setTogglingFavorite] = useState(false);
 
   useEffect(() => {
     if (!itemId || !open) return;
@@ -713,6 +720,35 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
     router.refresh();
   }
 
+  async function handleToggleFavorite() {
+    if (!item) return;
+
+    setTogglingFavorite(true);
+    const result = await toggleItemFavorite(item.id);
+    setTogglingFavorite(false);
+
+    if (!result.success) {
+      toast.error(result.error ?? "Failed to update favorite");
+      return;
+    }
+
+    setItem({
+      ...result.data,
+      createdAt:
+        result.data.createdAt instanceof Date
+          ? result.data.createdAt.toISOString()
+          : String(result.data.createdAt),
+      updatedAt:
+        result.data.updatedAt instanceof Date
+          ? result.data.updatedAt.toISOString()
+          : String(result.data.updatedAt),
+    });
+    toast.success(
+      result.data.isFavorite ? "Item added to favorites" : "Item removed from favorites"
+    );
+    router.refresh();
+  }
+
   return (
     <>
       <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -733,6 +769,8 @@ export function ItemDrawer({ itemId, open, onOpenChange }: ItemDrawerProps) {
               item={item}
               onEdit={() => setIsEditing(true)}
               onDeleteRequest={() => setDeleteConfirmOpen(true)}
+              onFavoriteToggle={handleToggleFavorite}
+              favoriteLoading={togglingFavorite}
             />
           )}
         </SheetContent>

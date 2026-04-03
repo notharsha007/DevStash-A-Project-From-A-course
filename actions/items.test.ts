@@ -7,11 +7,16 @@ vi.mock("@/auth", () => ({
 vi.mock("@/lib/db/items", () => ({
   updateItem: vi.fn(),
   deleteItem: vi.fn(),
+  toggleItemFavorite: vi.fn(),
 }));
 
 import { auth } from "@/auth";
-import { updateItem as dbUpdateItem, deleteItem as dbDeleteItem } from "@/lib/db/items";
-import { updateItem, deleteItem } from "./items";
+import {
+  updateItem as dbUpdateItem,
+  deleteItem as dbDeleteItem,
+  toggleItemFavorite as dbToggleItemFavorite,
+} from "@/lib/db/items";
+import { updateItem, deleteItem, toggleItemFavorite } from "./items";
 
 const mockItemDetail = {
   id: "item-1",
@@ -165,5 +170,58 @@ describe("deleteItem server action", () => {
     await deleteItem("item-99");
 
     expect(dbDeleteItem).toHaveBeenCalledWith("user-42", "item-99");
+  });
+});
+
+describe("toggleItemFavorite server action", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns unauthorized error when there is no session", async () => {
+    vi.mocked(auth).mockResolvedValue(null as any);
+
+    const result = await toggleItemFavorite("item-1");
+
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.error).toBe("Unauthorized");
+    expect(dbToggleItemFavorite).not.toHaveBeenCalled();
+  });
+
+  it("returns not found error when db returns null", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user-1" } } as never);
+    vi.mocked(dbToggleItemFavorite).mockResolvedValue(null);
+
+    const result = await toggleItemFavorite("item-1");
+
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.error).toBe("Item not found");
+  });
+
+  it("passes session user id to the db query", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user-42" } } as never);
+    vi.mocked(dbToggleItemFavorite).mockResolvedValue({
+      ...mockItemDetail,
+      isFavorite: true,
+    });
+
+    await toggleItemFavorite("item-99");
+
+    expect(dbToggleItemFavorite).toHaveBeenCalledWith("user-42", "item-99");
+  });
+
+  it("returns updated item data on success", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user-1" } } as never);
+    vi.mocked(dbToggleItemFavorite).mockResolvedValue({
+      ...mockItemDetail,
+      isFavorite: true,
+    });
+
+    const result = await toggleItemFavorite("item-1");
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.isFavorite).toBe(true);
+    }
   });
 });

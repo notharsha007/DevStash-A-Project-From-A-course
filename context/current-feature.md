@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Favorite Toggle Actions
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals for the active feature will appear here -->
+- Add a working favorite toggle button to the item drawer action bar
+- Add a working favorite toggle button to the collection detail page header
+- Add a working favorite toggle action to collection cards
+- Persist favorite state changes for both items and collections
+- Refresh the relevant views so favorite state updates immediately in the UI
+- Preserve the existing visual favorite indicators while making them interactive
 
 ## Notes
 
-<!-- Additional context or constraints will appear here -->
+- Source: inline feature description from `/feature load`
+- Scope is limited to enabling favorite toggles in the existing drawer, collection detail header, and collection cards
+- Reuse current favorite styling and existing auth/ownership patterns
 
 ## History
 
