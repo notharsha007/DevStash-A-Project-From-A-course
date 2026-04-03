@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, Plus, FolderPlus, PanelLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Search, Plus, FolderPlus, PanelLeft, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -18,6 +19,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ searchItems, searchCollections }: TopBarProps) {
+  const router = useRouter();
   const { toggleMobile } = useSidebar();
   const [createOpen, setCreateOpen] = useState(false);
   const [collectionOpen, setCollectionOpen] = useState(false);
@@ -71,6 +73,20 @@ export function TopBar({ searchItems, searchCollections }: TopBarProps) {
       </div>
 
       <div className="flex items-center gap-2">
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push("/favorites")}
+              />
+            }
+          >
+            <Star className="size-4" />
+          </TooltipTrigger>
+          <TooltipContent>Favorites</TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger
             render={
