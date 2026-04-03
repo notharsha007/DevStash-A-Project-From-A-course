@@ -1,16 +1,27 @@
-# Current Feature: None
+# Current Feature: Auth Nav and Folder Logo
 
 ## Status
 
-Idle
+Not Started
 
 ## Goals
 
-- No feature currently loaded
+- Add the homepage-style top navigation to the sign-in page
+- Add the homepage-style top navigation to the sign-up page
+- Keep auth-page navigation visually consistent with the landing page
+- Change the current `D` logo mark to a folder-like icon on the landing page
+- Change the current `D` logo mark to a folder-like icon in the dashboard/top bar
+- Keep the updated branding consistent across the affected surfaces
 
 ## Notes
 
-- Ready for the next `/feature load`
+- Scope:
+  - landing page
+  - dashboard/top bar
+  - sign-in page
+  - sign-up/register page
+- Preserve the current app theme and avoid making auth pages feel disconnected from the landing page
+- Reuse shared UI/components where practical instead of duplicating nav/logo markup
 
 ## History
 

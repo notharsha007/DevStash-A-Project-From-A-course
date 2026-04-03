@@ -47,7 +47,11 @@ export default async function SettingsLayout({
       <SidebarProvider>
         <TooltipProvider>
           <div className="flex h-screen flex-col">
-            <TopBar searchItems={searchItems} searchCollections={searchCollections} />
+            <TopBar
+              searchItems={searchItems}
+              searchCollections={searchCollections}
+              showBackButton
+            />
             <div className="flex flex-1 overflow-hidden">
               <Sidebar
                 itemTypes={itemTypes}

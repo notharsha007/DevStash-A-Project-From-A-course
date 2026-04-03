@@ -49,7 +49,11 @@ export default async function DashboardLayout({
       <SidebarProvider>
         <TooltipProvider>
           <div className="flex h-screen flex-col">
-            <TopBar searchItems={searchItems} searchCollections={searchCollections} />
+            <TopBar
+              searchItems={searchItems}
+              searchCollections={searchCollections}
+              showBackButton={false}
+            />
             <div className="flex flex-1 overflow-hidden">
               <Sidebar
                 itemTypes={itemTypes}

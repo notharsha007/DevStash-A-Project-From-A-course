@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { DevStashLogo } from "@/components/shared/DevStashLogo";
 
 const FEATURES = [
   {
@@ -223,12 +224,7 @@ export function HomepageFooter() {
     <footer className="mt-24 border-t border-border/70 bg-background/80">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
-          <div className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid size-8 place-items-center rounded-xl bg-linear-to-br from-blue-500 to-indigo-500 text-sm font-bold text-white shadow-lg shadow-blue-500/25">
-              D
-            </span>
-            <span className="text-lg">DevStash</span>
-          </div>
+          <DevStashLogo />
           <p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">
             Developer knowledge, finally organized.
           </p>
