@@ -49,16 +49,13 @@ export function HomepageNavbar({ isAuthenticated }: HomepageNavbarProps) {
         <div className="flex items-center gap-2">
           <Link
             href={isAuthenticated ? "/dashboard" : "/sign-in"}
-            className={buttonVariants({ variant: "outline", className: "rounded-full px-4" })}
+            className={buttonVariants({ variant: "outline" })}
           >
             {isAuthenticated ? "Dashboard" : "Sign In"}
           </Link>
           <Link
             href={isAuthenticated ? "/dashboard" : "/register"}
-            className={buttonVariants({
-              className:
-                "rounded-full border-0 bg-linear-to-r from-blue-500 via-indigo-500 to-violet-500 px-4 text-white shadow-lg shadow-blue-500/25 hover:opacity-90",
-            })}
+            className={buttonVariants()}
           >
             {isAuthenticated ? "Open App" : "Get Started"}
           </Link>

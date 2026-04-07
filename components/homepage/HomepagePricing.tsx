@@ -20,23 +20,23 @@ export function HomepagePricing({ primaryHref }: HomepagePricingProps) {
       className="mx-auto mt-28 max-w-7xl translate-y-8 px-6 opacity-0 transition-all duration-700 data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100"
     >
       <div className="mx-auto max-w-4xl text-center">
-        <p className="mb-3 text-sm font-medium uppercase tracking-[0.28em] text-blue-200/80">
+        <p className="mb-3 text-sm font-medium uppercase tracking-[0.28em] text-muted-foreground">
           Pricing
         </p>
-        <h2 className="font-serif text-4xl leading-none tracking-tight text-foreground md:text-6xl">
+        <h2 className="text-4xl font-bold leading-none tracking-tight text-foreground md:text-6xl">
           Start free, upgrade when your knowledge hub becomes mission critical
         </h2>
       </div>
 
       <div className="mt-8 flex justify-center">
-        <div className="inline-flex rounded-full border border-border bg-card/70 p-1">
+        <div className="inline-flex rounded-lg border border-border bg-card p-1">
           {(["monthly", "yearly"] as const).map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => setBilling(option)}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium capitalize transition-colors",
+                "rounded-md px-4 py-2 text-sm font-medium capitalize transition-colors",
                 billing === option
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -49,7 +49,7 @@ export function HomepagePricing({ primaryHref }: HomepagePricingProps) {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <article className="rounded-[2rem] border border-border bg-card/70 p-6 shadow-sm">
+        <article className="rounded-xl border border-border bg-card p-6 shadow-sm">
           <h3 className="text-2xl font-semibold">Free</h3>
           <p className="mt-4 flex items-end gap-2">
             <span className="font-serif text-5xl font-semibold">$0</span>
@@ -62,13 +62,13 @@ export function HomepagePricing({ primaryHref }: HomepagePricingProps) {
           </ul>
           <Link
             href={primaryHref}
-            className={buttonVariants({ variant: "outline", className: "mt-8 w-full rounded-full" })}
+            className={buttonVariants({ variant: "outline", className: "mt-8 w-full" })}
           >
             Start Free
           </Link>
         </article>
 
-        <article className="relative rounded-[2rem] border border-indigo-400/30 bg-linear-to-b from-card to-card/85 p-6 shadow-[0_22px_60px_rgba(79,70,229,0.16)]">
+        <article className="relative rounded-xl border border-indigo-400/30 bg-card p-6 shadow-sm">
           <div className="absolute right-5 top-5 rounded-full border border-indigo-400/25 bg-indigo-500/12 px-3 py-1 text-xs font-semibold text-indigo-100">
             Most Popular
           </div>
@@ -84,10 +84,7 @@ export function HomepagePricing({ primaryHref }: HomepagePricingProps) {
           </ul>
           <Link
             href={primaryHref}
-            className={buttonVariants({
-              className:
-                "mt-8 w-full rounded-full border-0 bg-linear-to-r from-blue-500 via-indigo-500 to-violet-500 text-white hover:opacity-90",
-            })}
+            className={buttonVariants({ className: "mt-8 w-full" })}
           >
             Go Pro
           </Link>

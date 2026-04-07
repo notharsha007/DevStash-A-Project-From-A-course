@@ -36,10 +36,10 @@ const FEATURES = [
 ] as const;
 
 const primaryButtonClass =
-  "inline-flex h-8 items-center justify-center rounded-full px-6 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 bg-linear-to-r from-blue-500 via-indigo-500 to-violet-500 text-white shadow-lg shadow-blue-500/25 hover:opacity-90";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all h-9 px-4 py-2 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90";
 
 const outlineButtonClass =
-  "inline-flex h-8 items-center justify-center rounded-full border border-border bg-background px-6 text-sm font-medium whitespace-nowrap transition-all outline-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all h-9 px-4 py-2 border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground";
 
 export function HomepageHeroCopy({
   isAuthenticated,
@@ -53,12 +53,12 @@ export function HomepageHeroCopy({
       data-reveal
       className="mx-auto max-w-4xl translate-y-8 text-center opacity-0 transition-all duration-700 data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100"
     >
-      <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-blue-200/80">
+      <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
         Developer Knowledge Hub
       </p>
-      <h1 className="font-serif text-5xl leading-none tracking-tight text-foreground sm:text-6xl lg:text-8xl">
+      <h1 className="text-5xl font-bold leading-tight tracking-tight text-foreground sm:text-6xl lg:text-8xl">
         Stop Losing Your
-        <span className="mt-2 block bg-linear-to-r from-blue-300 via-violet-300 to-orange-300 bg-clip-text text-transparent">
+        <span className="mt-2 block text-muted-foreground">
           Developer Knowledge
         </span>
       </h1>
@@ -78,13 +78,13 @@ export function HomepageHeroCopy({
         </Link>
       </div>
       <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <div className="rounded-3xl border border-border/70 bg-card/60 px-5 py-4 text-left shadow-sm">
+        <div className="rounded-xl border border-border bg-card px-5 py-4 text-left shadow-sm">
           <strong className="block text-sm font-semibold text-foreground">7 item types</strong>
           <span className="mt-1 block text-sm text-muted-foreground">
             Snippets, prompts, notes, files and more
           </span>
         </div>
-        <div className="rounded-3xl border border-border/70 bg-card/60 px-5 py-4 text-left shadow-sm">
+        <div className="rounded-xl border border-border bg-card px-5 py-4 text-left shadow-sm">
           <strong className="block text-sm font-semibold text-foreground">Instant retrieval</strong>
           <span className="mt-1 block text-sm text-muted-foreground">
             Searchable context instead of memory games
@@ -103,10 +103,10 @@ export function HomepageFeaturesSection() {
       className="mx-auto mt-28 max-w-7xl translate-y-8 px-6 opacity-0 transition-all duration-700 data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100"
     >
       <div className="mx-auto max-w-4xl text-center">
-        <p className="mb-3 text-sm font-medium uppercase tracking-[0.28em] text-blue-200/80">
+        <p className="mb-3 text-sm font-medium uppercase tracking-[0.28em] text-muted-foreground">
           Core Features
         </p>
-        <h2 className="font-serif text-4xl leading-none tracking-tight text-foreground md:text-6xl">
+        <h2 className="text-4xl font-bold leading-none tracking-tight text-foreground md:text-6xl">
           Everything you need to keep developer context within reach
         </h2>
       </div>
@@ -114,7 +114,7 @@ export function HomepageFeaturesSection() {
         {FEATURES.map((feature) => (
           <article
             key={feature.title}
-            className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-card/65 p-6 shadow-sm"
+            className="relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm"
             style={{ borderTop: `4px solid ${feature.accent}` }}
           >
             <div
@@ -142,7 +142,7 @@ export function HomepageAiSection() {
         <Badge className="rounded-full border-amber-400/20 bg-amber-400/12 px-3 py-1 text-amber-200 hover:bg-amber-400/12">
           Pro Feature
         </Badge>
-        <h2 className="mt-4 font-serif text-4xl leading-none tracking-tight text-foreground md:text-5xl">
+        <h2 className="mt-4 text-4xl font-bold leading-none tracking-tight text-foreground md:text-5xl">
           AI assistance that works with your real developer context
         </h2>
         <ul className="mt-8 space-y-4 text-muted-foreground">
@@ -160,13 +160,13 @@ export function HomepageAiSection() {
         </ul>
       </div>
 
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/80 shadow-[0_24px_80px_rgba(2,8,23,0.35)]">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <div className="flex gap-2 px-5 pt-5">
           <span className="size-3 rounded-full bg-red-400/70" />
           <span className="size-3 rounded-full bg-amber-400/70" />
           <span className="size-3 rounded-full bg-green-400/70" />
         </div>
-        <pre className="overflow-x-auto px-5 py-4 text-sm leading-7 text-blue-100">
+        <pre className="overflow-x-auto px-5 py-4 text-sm leading-7 text-muted-foreground">
 {`const deploymentChecklist = {
   task: "Ship dashboard search",
   risks: ["rate limiting", "cache misses"],
@@ -201,16 +201,16 @@ export function HomepageCtaSection({
       data-reveal
       className="mx-auto mt-28 max-w-7xl translate-y-8 px-6 opacity-0 transition-all duration-700 data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100"
     >
-      <div className="rounded-[2rem] border border-border/70 bg-linear-to-b from-card to-card/80 px-6 py-12 text-center shadow-[0_24px_80px_rgba(2,8,23,0.35)]">
-        <p className="mb-3 text-sm font-medium uppercase tracking-[0.28em] text-blue-200/80">
+      <div className="rounded-xl border border-border bg-card px-6 py-12 text-center shadow-sm">
+        <p className="mb-3 text-sm font-medium uppercase tracking-[0.28em] text-muted-foreground">
           Ready to Organize Your Knowledge?
         </p>
-        <h2 className="mx-auto max-w-4xl font-serif text-4xl leading-none tracking-tight text-foreground md:text-5xl">
+        <h2 className="mx-auto max-w-4xl text-4xl font-bold leading-none tracking-tight text-foreground md:text-5xl">
           Give your snippets, prompts, files, and notes a home that actually works.
         </h2>
         <Link
           href={isAuthenticated ? "/dashboard" : "/register"}
-          className={`${primaryButtonClass} mt-8`}
+          className={`mt-8 ${primaryButtonClass}`}
         >
           {isAuthenticated ? "Open Dashboard" : "Get Started with DevStash"}
         </Link>
@@ -221,7 +221,7 @@ export function HomepageCtaSection({
 
 export function HomepageFooter() {
   return (
-    <footer className="mt-24 border-t border-border/70 bg-background/80">
+    <footer className="mt-24 border-t border-border bg-card">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <DevStashLogo />
@@ -244,7 +244,7 @@ export function HomepageFooter() {
           </div>
         ))}
       </div>
-      <p className="border-t border-border/70 px-6 py-5 text-center text-sm text-muted-foreground">
+      <p className="border-t border-border px-6 py-5 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} DevStash. All rights reserved.
       </p>
     </footer>

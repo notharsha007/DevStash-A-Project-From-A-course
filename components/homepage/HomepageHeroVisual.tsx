@@ -25,7 +25,7 @@ function PreviewCard({
 }) {
   return (
     <article
-      className="min-w-0 rounded-2xl border border-border/70 bg-background/55 p-3 shadow-sm"
+      className="min-w-0 rounded-xl border border-border bg-card p-3 shadow-sm"
       style={{ borderTop: `3px solid ${accent}` }}
     >
       <h3 className="font-semibold leading-tight text-foreground">{title}</h3>
@@ -143,9 +143,8 @@ export function HomepageHeroVisual() {
           </p>
           <div
             ref={containerRef}
-            className="relative min-h-[24rem] overflow-hidden rounded-[2rem] border border-border/70 bg-linear-to-b from-slate-900/95 to-[#08101f] shadow-[0_28px_80px_rgba(2,8,23,0.45)]"
+            className="relative min-h-[24rem] overflow-hidden rounded-xl border border-border bg-card shadow-sm"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(236,72,153,0.12),transparent_30%),radial-gradient(circle_at_80%_15%,rgba(245,158,11,0.12),transparent_25%),radial-gradient(circle_at_50%_85%,rgba(59,130,246,0.12),transparent_28%)]" />
             {CHAOS_ITEMS.map((item, index) => {
               return (
                 <div
@@ -153,7 +152,7 @@ export function HomepageHeroVisual() {
                   ref={(node) => {
                     itemRefs.current[index] = node;
                   }}
-                  className="absolute flex h-16 min-w-16 items-center justify-center rounded-3xl border border-white/12 bg-white/7 px-3 text-sm font-semibold text-white shadow-lg backdrop-blur-md transition-transform"
+                  className="absolute flex h-12 min-w-12 items-center justify-center rounded-lg border border-border bg-muted px-3 text-sm font-semibold text-foreground shadow-sm transition-transform"
                   style={{ boxShadow: `0 0 32px ${item.accent}25` }}
                   title={item.label}
                 >
@@ -175,7 +174,7 @@ export function HomepageHeroVisual() {
           <p className="mb-3 text-center text-sm text-muted-foreground xl:text-left">
             ...with DevStash
           </p>
-          <div className="grid min-h-[24rem] grid-cols-[9rem_minmax(0,1fr)] overflow-hidden rounded-[2rem] border border-border/70 bg-card/90 shadow-[0_28px_80px_rgba(2,8,23,0.45)]">
+          <div className="grid min-h-[24rem] grid-cols-[9rem_minmax(0,1fr)] overflow-hidden rounded-xl border border-border bg-card shadow-sm">
             <aside className="border-r border-border/70 bg-card px-4 py-5">
               <div className="mb-5 text-lg font-semibold">DevStash</div>
               <div className="space-y-3 text-sm text-muted-foreground">
@@ -208,7 +207,7 @@ export function HomepageHeroVisual() {
         </section>
       </div>
 
-      <div className="flex items-center gap-3 rounded-full border border-border/70 bg-card/70 px-4 py-2 text-sm text-muted-foreground shadow-sm">
+      <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-2 text-sm text-muted-foreground shadow-sm">
         <WandSparkles className="size-4 text-indigo-300" />
         From scattered dev context to one fast, searchable hub
       </div>
